@@ -150,9 +150,9 @@ final class CoreBridge: @unchecked Sendable {
     // MARK: - File Watcher
 
     func startWatcher() -> Bool {
-        return queue.sync {
+        return queue.sync { () -> Bool in
             guard let h = handle else { return false }
-            return asm_start_watcher(h, nil) == 1
+            return asm_start_watcher(h) == 1
         }
     }
 

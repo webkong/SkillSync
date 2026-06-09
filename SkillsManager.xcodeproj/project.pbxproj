@@ -1,0 +1,479 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		76E743EE56417375AE73C212 /* SkillsManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CB23447536FAF8D597A0BA /* SkillsManagerApp.swift */; };
+		F2790DF64E3CAA2F2720C3DA /* CoreBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8E70EAFAB5AE9DF68D1C27 /* CoreBridge.swift */; };
+		A514659500A73E416CA06D75 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7206A2ADB1591D4E60E8073A /* AppState.swift */; };
+		70DF6AF64E7C5E11BC307B89 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11CBAC0AEA1DE148C9A5144 /* DataModels.swift */; };
+		D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE7A59897F40B96E50D193E /* ContentView.swift */; };
+		5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7624142D76074F79488525A5 /* SkillsListView.swift */; };
+		B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3475792B546ACD4469E9FB0 /* AgentsListView.swift */; };
+		75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */; };
+		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
+		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
+		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
+		B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */; };
+
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		79CB23447536FAF8D597A0BA /* SkillsManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsManagerApp.swift; sourceTree = "<group>"; };
+		7A8E70EAFAB5AE9DF68D1C27 /* CoreBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreBridge.swift; sourceTree = "<group>"; };
+		7206A2ADB1591D4E60E8073A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		D11CBAC0AEA1DE148C9A5144 /* DataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
+		BEE7A59897F40B96E50D193E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7624142D76074F79488525A5 /* SkillsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsListView.swift; sourceTree = "<group>"; };
+		E3475792B546ACD4469E9FB0 /* AgentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsListView.swift; sourceTree = "<group>"; };
+		B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAgentSheet.swift; sourceTree = "<group>"; };
+		A60B9BFF74FB99CA1C726D68 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
+		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E991F806D9CEFF3F7B30338C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillsManager.entitlements; sourceTree = "<group>"; };
+		B9693C1AD3E74080D3204EE9 /* SkillsManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillsManager-Bridging-Header.h; sourceTree = "<group>"; };
+		C2D27BB31EBC6B5686590172 /* SkillsManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillsManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		C3AB3F68C1591CEF27AC6B90 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				79CB23447536FAF8D597A0BA /* App/SkillsManagerApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F4934868FC09E3261EBE8371 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				7A8E70EAFAB5AE9DF68D1C27 /* Bridge/CoreBridge.swift */,
+				B9693C1AD3E74080D3204EE9 /* Bridge/SkillsManager-Bridging-Header.h */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		77C41736F656D48926654E44 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7206A2ADB1591D4E60E8073A /* Models/AppState.swift */,
+				D11CBAC0AEA1DE148C9A5144 /* Models/DataModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F65D2A85BAB8057EEFA3ABD9 /* SkillsPanel */ = {
+			isa = PBXGroup;
+			children = (
+				7624142D76074F79488525A5 /* Views/SkillsPanel/SkillsListView.swift */,
+			);
+			path = SkillsPanel;
+			sourceTree = "<group>";
+		};
+		DF001377D7347CF9EAF3EC95 /* AgentsPanel */ = {
+			isa = PBXGroup;
+			children = (
+				E3475792B546ACD4469E9FB0 /* Views/AgentsPanel/AgentsListView.swift */,
+				B21297EF8F0E49196D39BB80 /* Views/AgentsPanel/AddAgentSheet.swift */,
+			);
+			path = AgentsPanel;
+			sourceTree = "<group>";
+		};
+		36021EE4B379CB9894DF3A28 /* SyncPanel */ = {
+			isa = PBXGroup;
+			children = (
+				A60B9BFF74FB99CA1C726D68 /* Views/SyncPanel/SyncView.swift */,
+			);
+			path = SyncPanel;
+			sourceTree = "<group>";
+		};
+		D1A6FB689DB7C65AD146001F /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				644054408F44F0E400F2278C /* Views/Settings/SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		9A89640EA1DD26093EC52632 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BEE7A59897F40B96E50D193E /* Views/ContentView.swift */,
+				F65D2A85BAB8057EEFA3ABD9 /* Group/SkillsPanel */,
+				DF001377D7347CF9EAF3EC95 /* Group/AgentsPanel */,
+				36021EE4B379CB9894DF3A28 /* Group/SyncPanel */,
+				D1A6FB689DB7C65AD146001F /* Group/Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		99C0C7812AA0328845BC85EF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
+				4637E3EAAF19BEB63873D5A6 /* Resources/SkillsManager.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F58DF55018674E35E89E759C /* SkillsManager */ = {
+			isa = PBXGroup;
+			children = (
+				C3AB3F68C1591CEF27AC6B90 /* Group/App */,
+				F4934868FC09E3261EBE8371 /* Group/Bridge */,
+				77C41736F656D48926654E44 /* Group/Models */,
+				9A89640EA1DD26093EC52632 /* Group/Views */,
+				99C0C7812AA0328845BC85EF /* Group/Resources */,
+			);
+			path = "macos/SkillsManager";
+			sourceTree = "<group>";
+		};
+		6D159F361021D92BC3E10E55 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C2D27BB31EBC6B5686590172 /* SkillsManager.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5C999E731352905727541C3C = {
+			isa = PBXGroup;
+			children = (
+				F58DF55018674E35E89E759C /* SkillsManager */,
+				6D159F361021D92BC3E10E55 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C795AA2738071F015DE00151 /* SkillsManager */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillsManager" */;
+			buildPhases = (
+				C19E61334BFBC559F37D14E2 /* Build Rust Core */,
+				DE6EE531638FBF802B9F50F8 /* Sources */,
+				505DCE76C480DFFAA8952713 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SkillsManager;
+			packageProductDependencies = (
+			);
+			productName = SkillsManager;
+			productReference = C2D27BB31EBC6B5686590172 /* SkillsManager.app */;
+			productType = "com.apple.product-type.application";
+		};
+
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5CD759D4193846E4910FD9BB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					C795AA2738071F015DE00151 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillsManager" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 5C999E731352905727541C3C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6D159F361021D92BC3E10E55 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C795AA2738071F015DE00151 /* SkillsManager */,
+			);
+		};
+
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		505DCE76C480DFFAA8952713 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26870478A43345430FE7EE4C /* Info.plist in Resources */,
+				B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C19E61334BFBC559F37D14E2 /* Build Rust Core */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Rust Core";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\nexport OPENSSL_DIR=/opt/homebrew/opt/openssl\nexport PKG_CONFIG_SYSROOT_DIR=/\nexport PKG_CONFIG_PATH=/opt/homebrew/opt/openssl/lib/pkgconfig\ncd \"$PROJECT_DIR/skills-core\"\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n    cargo build --release --target aarch64-apple-darwin\nelse\n    cargo build --target aarch64-apple-darwin\nfi";
+		};
+
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DE6EE531638FBF802B9F50F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76E743EE56417375AE73C212 /* SkillsManagerApp.swift in Sources */,
+				F2790DF64E3CAA2F2720C3DA /* CoreBridge.swift in Sources */,
+				A514659500A73E416CA06D75 /* AppState.swift in Sources */,
+				70DF6AF64E7C5E11BC307B89 /* DataModels.swift in Sources */,
+				D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */,
+				5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */,
+				B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */,
+				75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */,
+				3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */,
+				D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13A9DFF8F6856CAC9C210911 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				SDKROOT = macosx;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+				"$(inherited)",
+				"DEBUG=1",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		46D3236E9F92A96F387A35D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				SDKROOT = macosx;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FAC52C1C391B14FB874D86B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+				"$(inherited)",
+				"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug",
+				);
+				OTHER_LDFLAGS = (
+				"-force_load",
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+				"-framework",
+				Security,
+				"-lz",
+				"-liconv",
+				"-L/opt/homebrew/opt/openssl/lib",
+				"-lssl",
+				"-lcrypto",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		9A4DF478F372EEEC0888CC04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+				"$(inherited)",
+				"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug",
+				);
+				OTHER_LDFLAGS = (
+				"-force_load",
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+				"-framework",
+				Security,
+				"-lz",
+				"-liconv",
+				"-L/opt/homebrew/opt/openssl/lib",
+				"-lssl",
+				"-lcrypto",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
+			};
+			name = Release;
+		};
+
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillsManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13A9DFF8F6856CAC9C210911 /* Debug */,
+				46D3236E9F92A96F387A35D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillsManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAC52C1C391B14FB874D86B4 /* Debug */,
+				9A4DF478F372EEEC0888CC04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+
+/* End XCConfigurationList section */
+	};
+	rootObject = 5CD759D4193846E4910FD9BB /* Project object */;
+}
