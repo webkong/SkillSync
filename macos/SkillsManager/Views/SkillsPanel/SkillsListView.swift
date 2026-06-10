@@ -142,6 +142,12 @@ struct SkillRowView: View {
     let onDelete: () -> Void
 
     @ObservedObject private var appState = AppState.shared
+    @AppStorage(AgentVisibilityStore.defaultsKey) private var visibleAgentsRaw = AgentVisibilityStore.defaultVisible.sorted().joined(separator: ",")
+
+    private var visibleAgents: [AgentConfig] {
+        let visibleIds = AgentVisibilityStore.visibleSet(from: visibleAgentsRaw)
+        return appState.agents.filter { visibleIds.contains($0.id) }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -159,7 +165,7 @@ struct SkillRowView: View {
 
                 // Agent toggle buttons
                 HStack(spacing: 4) {
-                    ForEach(appState.agents) { agent in
+                    ForEach(visibleAgents) { agent in
                         let isLinked = agent.linkedSkills.contains(skill.id)
                         Button {
                             appState.toggleSkillLink(

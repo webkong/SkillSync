@@ -98,8 +98,14 @@ struct NewSkillSheet: View {
     let onDismiss: () -> Void
 
     @ObservedObject private var appState = AppState.shared
+    @AppStorage(AgentVisibilityStore.defaultsKey) private var visibleAgentsRaw = AgentVisibilityStore.defaultVisible.sorted().joined(separator: ",")
 
     @State private var selectedAgents: Set<String> = []
+
+    private var visibleAgents: [AgentConfig] {
+        let visibleIds = AgentVisibilityStore.visibleSet(from: visibleAgentsRaw)
+        return appState.agents.filter { visibleIds.contains($0.id) }
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -132,7 +138,7 @@ struct NewSkillSheet: View {
                 .font(.subheadline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            ForEach(appState.agents) { agent in
+            ForEach(visibleAgents) { agent in
                 let isCompatible = skill.manifest.compatibleAgents.contains("*") ||
                     skill.manifest.compatibleAgents.contains(agent.id)
                 HStack {
