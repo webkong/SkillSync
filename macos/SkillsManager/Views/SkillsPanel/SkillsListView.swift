@@ -30,27 +30,28 @@ struct SkillsListView: View {
                     appState.fetchAgentSkills()
                 } label: {
                     HStack(spacing: 4) {
-                        if appState.isLoading {
+                        if appState.isFetching {
                             ProgressView()
-                                .scaleEffect(0.6)
+                                .scaleEffect(0.5)
+                                .frame(width: 12, height: 12)
                         } else {
                             Image(systemName: "arrow.clockwise")
                         }
                         Text("Fetch")
                     }
                 }
-                .disabled(appState.isLoading)
-                .help("Scan all agent directories for skills")
+                .disabled(appState.isFetching)
+                .quickHelp("Scan all agent directories for skills")
 
                 Button {
-                    appState.organizeAll()
+                    appState.showOrganizeConfirm = true
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "folder.badge.gearshape")
                         Text("Organize")
                     }
                 }
-                .help("Move all skills to source directory and create symlinks")
+                .quickHelp("Move all skills to source directory and create symlinks")
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
@@ -173,7 +174,7 @@ struct OrganizedSkillRowView: View {
                 }
             }
 
-            // Tags
+            // Tags row: manifest tags
             if !skill.tagsList.isEmpty {
                 HStack(spacing: 4) {
                     ForEach(skill.tagsList, id: \.self) { tag in
@@ -204,7 +205,7 @@ struct OrganizedSkillRowView: View {
                     .foregroundStyle(.blue)
             }
             .buttonStyle(.plain)
-            .help("Move to source directory")
+            .quickHelp("Move to source directory")
         } else if skill.isInSourceRoot {
             // Restore button (only when organized and in source root)
             Button {
@@ -215,11 +216,16 @@ struct OrganizedSkillRowView: View {
                     .foregroundStyle(.orange)
             }
             .buttonStyle(.plain)
-            .help("Restore back to original agent directory")
+            .quickHelp("Restore back to original agent directory")
         }
     }
 
     // MARK: - Source Indicator
+
+    /// Find the agent name for a given agent ID.
+    private func agentName(for agentId: String) -> String {
+        appState.agents.first(where: { $0.id == agentId })?.name ?? agentId
+    }
 
     @ViewBuilder
     private var sourceIndicator: some View {
@@ -231,12 +237,21 @@ struct OrganizedSkillRowView: View {
                     .padding(.vertical, 1)
                     .background(.gray.opacity(0.1), in: Capsule())
                     .foregroundStyle(.secondary)
-                Text("Source")
+                Text("Global")
                     .font(.caption2)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 1)
                     .background(.blue.opacity(0.1), in: Capsule())
                     .foregroundStyle(.blue)
+                if skill.agentSource == "claude-code" {
+                    Text("Claude Code")
+                        .font(.caption2)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 1)
+                        .background(.orange.opacity(0.1), in: Capsule())
+                        .foregroundStyle(.orange)
+                        .quickHelp("This skill originated from Claude Code and may not be compatible with other agents")
+                }
             }
         } else {
             HStack(spacing: 4) {
@@ -246,11 +261,21 @@ struct OrganizedSkillRowView: View {
                     .padding(.vertical, 1)
                     .background(.gray.opacity(0.1), in: Capsule())
                     .foregroundStyle(.secondary)
-                Text(skill.sourceDir)
+                Text(agentName(for: skill.agentSource))
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 1)
+                    .background(.gray.opacity(0.1), in: Capsule())
+                    .foregroundStyle(.secondary)
+                if skill.agentSource == "claude-code" {
+                    Text("Claude Code")
+                        .font(.caption2)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 1)
+                        .background(.orange.opacity(0.1), in: Capsule())
+                        .foregroundStyle(.orange)
+                        .quickHelp("This skill originated from Claude Code and may not be compatible with other agents")
+                }
             }
         }
     }
@@ -283,7 +308,7 @@ struct OrganizedSkillRowView: View {
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(tagTooltip(isLinked: isLinked, isSource: isSource, agent: agent))
+        .quickHelp(tagTooltip(isLinked: isLinked, isSource: isSource, agent: agent))
     }
 
     private func tagBackground(isLinked: Bool, isSource: Bool) -> Color {

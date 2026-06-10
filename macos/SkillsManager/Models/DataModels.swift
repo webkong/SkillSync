@@ -11,9 +11,10 @@ struct AgentConfig: Codable, Identifiable {
     var isLinked: Bool
     var linkedSkills: [String]
     let icon: String?
+    let exists: Bool
 
     enum CodingKeys: String, CodingKey {
-        case id, name, icon
+        case id, name, icon, exists
         case skillsPath = "skills_path"
         case linkType = "link_type"
         case isBuiltin = "is_builtin"
@@ -140,7 +141,10 @@ struct SkillAgentLink: Codable {
     }
 }
 
-struct OrganizedSkill: Codable, Identifiable {
+struct OrganizedSkill: Codable, Identifiable, Equatable {
+    static func == (lhs: OrganizedSkill, rhs: OrganizedSkill) -> Bool {
+        lhs.id == rhs.id
+    }
     let id: String
     let sourceDir: String
     let agentSource: String

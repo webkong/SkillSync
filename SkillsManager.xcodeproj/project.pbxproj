@@ -17,6 +17,8 @@
 		D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */; };
 		75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */; };
 		D8B7BA54F526480AA8D41353 /* SkillDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7925B11F3F74EA0BB13550A /* SkillDetailView.swift */; };
+		88B5D1E06BD3481B83DA0209 /* OrganizeConfirmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0724586568477896CD3FCD /* OrganizeConfirmView.swift */; };
+		D19DD2B65AD446AC817C6D57 /* QuickHelpModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6936C01BF0074E878AC02FD6 /* QuickHelpModifier.swift */; };
 		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
@@ -93,6 +95,8 @@
 		F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentIconView.swift; sourceTree = "<group>"; };
 		B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAgentSheet.swift; sourceTree = "<group>"; };
 		C7925B11F3F74EA0BB13550A /* SkillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillDetailView.swift; sourceTree = "<group>"; };
+		FB0724586568477896CD3FCD /* OrganizeConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeConfirmView.swift; sourceTree = "<group>"; };
+		6936C01BF0074E878AC02FD6 /* QuickHelpModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components/QuickHelpModifier.swift; sourceTree = "<group>"; };
 		A60B9BFF74FB99CA1C726D68 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePromptView.swift; sourceTree = "<group>"; };
@@ -192,6 +196,7 @@
 			children = (
 				7624142D76074F79488525A5 /* Views/SkillsPanel/SkillsListView.swift */,
 				F2A1B3C4D5E6F7A8B9C0D1E2 /* Views/SkillsPanel/OrganizePromptView.swift */,
+				FB0724586568477896CD3FCD /* Views/SkillsPanel/OrganizeConfirmView.swift */,
 				C7925B11F3F74EA0BB13550A /* Views/SkillsPanel/SkillDetailView.swift */,
 			);
 			path = SkillsPanel;
@@ -231,6 +236,7 @@
 				DF001377D7347CF9EAF3EC95 /* Group/AgentsPanel */,
 				36021EE4B379CB9894DF3A28 /* Group/SyncPanel */,
 				D1A6FB689DB7C65AD146001F /* Group/Settings */,
+				6936C01BF0074E878AC02FD6 /* Views/Components/QuickHelpModifier.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -508,12 +514,14 @@
 				D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */,
 				5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */,
 				D8B7BA54F526480AA8D41353 /* SkillDetailView.swift in Sources */,
+				D19DD2B65AD446AC817C6D57 /* QuickHelpModifier.swift in Sources */,
 				B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */,
 				D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */,
 				75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */,
 				3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */,
 				D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */,
+				88B5D1E06BD3481B83DA0209 /* OrganizeConfirmView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

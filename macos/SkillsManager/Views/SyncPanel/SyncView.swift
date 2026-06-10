@@ -14,7 +14,7 @@ struct SyncView: View {
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .help("Refresh status")
+                .quickHelp("Refresh status")
             }
             .padding(.horizontal)
             .padding(.vertical, 8)

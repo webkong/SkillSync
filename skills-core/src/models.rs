@@ -12,6 +12,7 @@ pub struct AgentConfig {
     pub is_linked: bool,
     pub linked_skills: Vec<String>,
     pub icon: Option<String>,
+    pub exists: bool,
 }
 
 impl AgentConfig {
@@ -30,6 +31,7 @@ impl AgentConfig {
             is_linked: false,
             linked_skills: Vec::new(),
             icon: None,
+            exists: false,
         }
     }
 
@@ -48,6 +50,7 @@ impl AgentConfig {
             is_linked: false,
             linked_skills: Vec::new(),
             icon: None,
+            exists: false,
         }
     }
 }

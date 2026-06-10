@@ -92,6 +92,13 @@ struct SettingsView: View {
 
     // MARK: - Agents Tab
 
+    private var sortedAgents: [AgentConfig] {
+        appState.agents.sorted { a, b in
+            if a.exists != b.exists { return a.exists } // existing first
+            return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
+        }
+    }
+
     private var agentsTab: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -99,13 +106,13 @@ struct SettingsView: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text("Select which agents appear in the Skills list. Only visible agents can have skills linked.")
+                Text("Select which agents appear in the Skills list. Only visible agents can have skills linked. Dimmed agents have no local skills directory.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
                 SettingsCard(title: "Visible Agents") {
                     FlowLayout(itemSpacing: 8, rowSpacing: 8) {
-                        ForEach(appState.agents, id: \.id) { agent in
+                        ForEach(sortedAgents, id: \.id) { agent in
                             agentChip(agent: agent)
                         }
                     }
@@ -123,15 +130,20 @@ struct SettingsView: View {
             toggleAgent(agent.id)
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: isVisible ? "checkmark.circle.fill" : "circle")
-                    .font(.caption)
+                if agent.exists {
+                    Image(systemName: isVisible ? "checkmark.circle.fill" : "circle")
+                        .font(.caption)
+                } else {
+                    Image(systemName: isVisible ? "checkmark.circle.fill" : "circle")
+                        .font(.caption)
+                }
                 Text(agent.name)
                     .font(.caption)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
             .background(isVisible ? Color.accentColor.opacity(0.15) : Color(nsColor: .controlBackgroundColor))
-            .foregroundStyle(isVisible ? .primary : .secondary)
+            .foregroundStyle(agent.exists ? (isVisible ? .primary : .secondary) : .tertiary)
             .clipShape(Capsule())
             .overlay(
                 Capsule()
@@ -139,6 +151,7 @@ struct SettingsView: View {
             )
         }
         .buttonStyle(.plain)
+        .opacity(agent.exists ? 1.0 : 0.45)
     }
 
     private var visibleAgentIds: Set<String> {

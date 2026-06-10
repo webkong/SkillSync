@@ -3,22 +3,40 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject private var appState = AppState.shared
     @State private var selectedTab: SidebarTab = .skills
+    @State private var isDetailVisible = false
 
     var body: some View {
         NavigationSplitView {
             sidebar
                 .navigationSplitViewColumnWidth(min: 160, ideal: 180, max: 220)
-        } content: {
-            contentArea
-                .navigationSplitViewColumnWidth(min: 400, ideal: 500)
         } detail: {
-            detailArea
+            HStack(spacing: 0) {
+                // Content area fills the main space
+                contentArea
+                    .frame(maxWidth: .infinity)
+
+                // Detail panel on the right, not overlapping
+                if isDetailVisible {
+                    detailArea
+                        .frame(width: 280)
+                        .background(.background)
+                        .shadow(color: .black.opacity(0.06), radius: 4, x: -2)
+                }
+            }
         }
         .sheet(item: $appState.pendingNewSkill) { skill in
             NewSkillSheet(skill: skill) { agentIds in
                 appState.enableNewSkill(forAgentIds: agentIds)
             } onDismiss: {
                 appState.dismissNewSkill()
+            }
+        }
+        .sheet(isPresented: $appState.showOrganizeConfirm) {
+            OrganizeConfirmView()
+        }
+        .onChange(of: appState.selectedSkill) { newValue in
+            if newValue != nil {
+                isDetailVisible = true
             }
         }
     }
@@ -44,6 +62,19 @@ struct ContentView: View {
         switch selectedTab {
         case .skills:
             SkillsListView()
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isDetailVisible.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "sidebar.right")
+                                .foregroundStyle(isDetailVisible ? .primary : .secondary)
+                        }
+                        .quickHelp(isDetailVisible ? "Hide detail panel" : "Show detail panel")
+                    }
+                }
         case .agents:
             AgentsListView()
         case .sync:
@@ -187,7 +218,6 @@ struct NewSkillSheet: View {
         .padding()
         .frame(width: 400, height: 400)
         .onAppear {
-            // Pre-select compatible agents
             for agent in appState.agents {
                 let isCompatible = skill.manifest.compatibleAgents.contains("*") ||
                     skill.manifest.compatibleAgents.contains(agent.id)

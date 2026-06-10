@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 @main
 struct SkillsManagerApp: App {
@@ -22,6 +23,8 @@ struct SkillsManagerApp: App {
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Reduce tooltip delay to 300ms
+        UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
         AppState.shared.loadInitialData()
         AppState.shared.checkOrganizeStatus()
         _ = CoreBridge.shared.startWatcher()

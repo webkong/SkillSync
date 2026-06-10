@@ -14,6 +14,8 @@ final class AppState: ObservableObject {
     @Published var pendingChanges: [PendingChange] = []
     @Published var pendingNewSkill: SkillEntry? = nil
     @Published var isLoading = false
+    @Published var isFetching = false
+    @Published var showOrganizeConfirm = false
     @Published var selectedSkill: OrganizedSkill? = nil
 
     // MARK: - Initialization
@@ -88,11 +90,18 @@ final class AppState: ObservableObject {
     }
 
     func fetchAgentSkills() {
-        isLoading = true
+        isFetching = true
+        agents = core.listAgents()
         _ = core.refreshSkillDb()
         organizedSkills = core.getSkillList()
         skills = core.listSkills()
-        isLoading = false
+        // Keep loading indicator visible for at least 1 second
+        Task {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            await MainActor.run {
+                isFetching = false
+            }
+        }
     }
 
     func enableNewSkill(forAgentIds agentIds: [String]) {
@@ -121,6 +130,7 @@ final class AppState: ObservableObject {
             skills = core.listSkills()
             core.setOrganized()
             showOrganizePrompt = false
+            showOrganizeConfirm = false
         }
         isLoading = false
     }

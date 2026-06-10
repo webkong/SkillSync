@@ -153,7 +153,14 @@ pub extern "C" fn asm_list_agents(handle: *mut CoreHandle) -> *mut c_char {
         return std::ptr::null_mut();
     }
     let h = unsafe { &*handle };
-    to_json_cstring(&h.registry.all())
+    let mut agents = h.registry.all();
+    // Check which agent skill directories actually exist on disk
+    for agent in &mut agents {
+        agent.exists = crate::agent_registry::expand_path(&agent.skills_path)
+            .map(|p| p.exists() && p.is_dir())
+            .unwrap_or(false);
+    }
+    to_json_cstring(&agents)
 }
 
 /// Add a custom agent.
