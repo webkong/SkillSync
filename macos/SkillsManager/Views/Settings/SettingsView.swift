@@ -62,7 +62,7 @@ struct SettingsView: View {
                         .onAppear {
                             if sourceRoot.isEmpty {
                                 let home = FileManager.default.homeDirectoryForCurrentUser.path
-                                sourceRoot = "\(home)/.agent/skills"
+                                sourceRoot = "~/.agent/skills"
                             }
                         }
 
