@@ -42,6 +42,20 @@ struct AgentIconView: View {
         case "kiro": return "kiro"
         case "qoder": return "qoder"
         case "hermes": return "hermes"
+        case "copilot": return "copilot"
+        case "trae": return "trae"
+        case "zed": return "zed"
+        case "antigravity": return "antigravity"
+        case "kimi": return "kimi"
+        case "grok": return "grok"
+        case "workbuddy": return "workbuddy"
+        case "roocode": return "roocode"
+        case "kilocode": return "kilocode"
+        case "kilocli": return "kilocli"
+        case "goose": return "goose"
+        case "ohmypi": return "ohmypi"
+        case "pi": return "pi"
+        case "craft": return "craft"
         default: return id
         }
     }

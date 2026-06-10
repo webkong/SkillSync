@@ -46,6 +46,38 @@
 		LOGO0022BF /* windsurf.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0022FR /* windsurf.svg */; };
 		LOGO0023BF /* workbuddy.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0023FR /* workbuddy.png */; };
 		LOGO0024BF /* zed.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0024FR /* zed.png */; };
+		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
+		LOGO0001BF /* claude-code.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0001FR /* claude-code.svg */; };
+		LOGO0002BF /* codebuddy.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0002FR /* codebuddy.svg */; };
+		LOGO0003BF /* codex.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0003FR /* codex.svg */; };
+		LOGO0004BF /* copilot.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0004FR /* copilot.svg */; };
+		LOGO0005BF /* craft.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0005FR /* craft.svg */; };
+		LOGO0006BF /* cursor.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0006FR /* cursor.svg */; };
+		LOGO0007BF /* deepseek.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0007FR /* deepseek.png */; };
+		LOGO0008BF /* deepseek.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0008FR /* deepseek.svg */; };
+		LOGO0009BF /* gemini.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0009FR /* gemini.svg */; };
+		LOGO0010BF /* glm.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0010FR /* glm.svg */; };
+		LOGO0011BF /* goose.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0011FR /* goose.svg */; };
+		LOGO0012BF /* grok.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0012FR /* grok.svg */; };
+		LOGO0013BF /* hermes.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0013FR /* hermes.svg */; };
+		LOGO0014BF /* kilo.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0014FR /* kilo.svg */; };
+		LOGO0015BF /* kilocli.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0015FR /* kilocli.svg */; };
+		LOGO0016BF /* kilocode.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0016FR /* kilocode.svg */; };
+		LOGO0017BF /* kimi.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0017FR /* kimi.svg */; };
+		LOGO0018BF /* kiro.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0018FR /* kiro.svg */; };
+		LOGO0019BF /* mimo.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0019FR /* mimo.svg */; };
+		LOGO0020BF /* minimax.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0020FR /* minimax.svg */; };
+		LOGO0021BF /* ohmypi.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0021FR /* ohmypi.svg */; };
+		LOGO0022BF /* openclaw.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0022FR /* openclaw.svg */; };
+		LOGO0023BF /* opencode.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0023FR /* opencode.svg */; };
+		LOGO0024BF /* pi.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0024FR /* pi.svg */; };
+		LOGO0025BF /* qoder.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0025FR /* qoder.png */; };
+		LOGO0026BF /* qwen.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0026FR /* qwen.svg */; };
+		LOGO0027BF /* roocode.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0027FR /* roocode.svg */; };
+		LOGO0028BF /* trae.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0028FR /* trae.png */; };
+		LOGO0029BF /* windsurf.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0029FR /* windsurf.svg */; };
+		LOGO0030BF /* workbuddy.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0030FR /* workbuddy.png */; };
+		LOGO0031BF /* zed.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0031FR /* zed.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +122,38 @@
 		LOGO0022FR /* windsurf.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = windsurf.svg; sourceTree = "<group>"; };
 		LOGO0023FR /* workbuddy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = workbuddy.png; sourceTree = "<group>"; };
 		LOGO0024FR /* zed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zed.png; sourceTree = "<group>"; };
+		LOGO0000FR /* antigravity.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = antigravity.svg; sourceTree = "<group>"; };
+		LOGO0001FR /* claude-code.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = claude-code.svg; sourceTree = "<group>"; };
+		LOGO0002FR /* codebuddy.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = codebuddy.svg; sourceTree = "<group>"; };
+		LOGO0003FR /* codex.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = codex.svg; sourceTree = "<group>"; };
+		LOGO0004FR /* copilot.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = copilot.svg; sourceTree = "<group>"; };
+		LOGO0005FR /* craft.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = craft.svg; sourceTree = "<group>"; };
+		LOGO0006FR /* cursor.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = cursor.svg; sourceTree = "<group>"; };
+		LOGO0007FR /* deepseek.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deepseek.png; sourceTree = "<group>"; };
+		LOGO0008FR /* deepseek.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = deepseek.svg; sourceTree = "<group>"; };
+		LOGO0009FR /* gemini.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = gemini.svg; sourceTree = "<group>"; };
+		LOGO0010FR /* glm.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = glm.svg; sourceTree = "<group>"; };
+		LOGO0011FR /* goose.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = goose.svg; sourceTree = "<group>"; };
+		LOGO0012FR /* grok.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = grok.svg; sourceTree = "<group>"; };
+		LOGO0013FR /* hermes.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = hermes.svg; sourceTree = "<group>"; };
+		LOGO0014FR /* kilo.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kilo.svg; sourceTree = "<group>"; };
+		LOGO0015FR /* kilocli.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kilocli.svg; sourceTree = "<group>"; };
+		LOGO0016FR /* kilocode.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kilocode.svg; sourceTree = "<group>"; };
+		LOGO0017FR /* kimi.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kimi.svg; sourceTree = "<group>"; };
+		LOGO0018FR /* kiro.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kiro.svg; sourceTree = "<group>"; };
+		LOGO0019FR /* mimo.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = mimo.svg; sourceTree = "<group>"; };
+		LOGO0020FR /* minimax.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = minimax.svg; sourceTree = "<group>"; };
+		LOGO0021FR /* ohmypi.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = ohmypi.svg; sourceTree = "<group>"; };
+		LOGO0022FR /* openclaw.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = openclaw.svg; sourceTree = "<group>"; };
+		LOGO0023FR /* opencode.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = opencode.svg; sourceTree = "<group>"; };
+		LOGO0024FR /* pi.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = pi.svg; sourceTree = "<group>"; };
+		LOGO0025FR /* qoder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = qoder.png; sourceTree = "<group>"; };
+		LOGO0026FR /* qwen.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = qwen.svg; sourceTree = "<group>"; };
+		LOGO0027FR /* roocode.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = roocode.svg; sourceTree = "<group>"; };
+		LOGO0028FR /* trae.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trae.png; sourceTree = "<group>"; };
+		LOGO0029FR /* windsurf.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = windsurf.svg; sourceTree = "<group>"; };
+		LOGO0030FR /* workbuddy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = workbuddy.png; sourceTree = "<group>"; };
+		LOGO0031FR /* zed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zed.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -171,6 +235,7 @@
 				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
 				4637E3EAAF19BEB63873D5A6 /* Resources/SkillsManager.entitlements */,
 							LOGOGRP /* brand-logos */,
+				LOGOGRP /* brand-logos */,
 );
 			path = Resources;
 			sourceTree = "<group>";
@@ -232,6 +297,45 @@
 				LOGO0022FR /* brand-logos/windsurf.svg */,
 				LOGO0023FR /* brand-logos/workbuddy.png */,
 				LOGO0024FR /* brand-logos/zed.png */,
+			);
+			path = brand-logos;
+			sourceTree = "<group>";
+		};
+		LOGOGRP /* brand-logos */ = {
+			isa = PBXGroup;
+			children = (
+				LOGO0000FR /* brand-logos/antigravity.svg */,
+				LOGO0001FR /* brand-logos/claude-code.svg */,
+				LOGO0002FR /* brand-logos/codebuddy.svg */,
+				LOGO0003FR /* brand-logos/codex.svg */,
+				LOGO0004FR /* brand-logos/copilot.svg */,
+				LOGO0005FR /* brand-logos/craft.svg */,
+				LOGO0006FR /* brand-logos/cursor.svg */,
+				LOGO0007FR /* brand-logos/deepseek.png */,
+				LOGO0008FR /* brand-logos/deepseek.svg */,
+				LOGO0009FR /* brand-logos/gemini.svg */,
+				LOGO0010FR /* brand-logos/glm.svg */,
+				LOGO0011FR /* brand-logos/goose.svg */,
+				LOGO0012FR /* brand-logos/grok.svg */,
+				LOGO0013FR /* brand-logos/hermes.svg */,
+				LOGO0014FR /* brand-logos/kilo.svg */,
+				LOGO0015FR /* brand-logos/kilocli.svg */,
+				LOGO0016FR /* brand-logos/kilocode.svg */,
+				LOGO0017FR /* brand-logos/kimi.svg */,
+				LOGO0018FR /* brand-logos/kiro.svg */,
+				LOGO0019FR /* brand-logos/mimo.svg */,
+				LOGO0020FR /* brand-logos/minimax.svg */,
+				LOGO0021FR /* brand-logos/ohmypi.svg */,
+				LOGO0022FR /* brand-logos/openclaw.svg */,
+				LOGO0023FR /* brand-logos/opencode.svg */,
+				LOGO0024FR /* brand-logos/pi.svg */,
+				LOGO0025FR /* brand-logos/qoder.png */,
+				LOGO0026FR /* brand-logos/qwen.svg */,
+				LOGO0027FR /* brand-logos/roocode.svg */,
+				LOGO0028FR /* brand-logos/trae.png */,
+				LOGO0029FR /* brand-logos/windsurf.svg */,
+				LOGO0030FR /* brand-logos/workbuddy.png */,
+				LOGO0031FR /* brand-logos/zed.png */,
 			);
 			path = brand-logos;
 			sourceTree = "<group>";
@@ -325,6 +429,38 @@
 				LOGO0022BF /* windsurf.svg in Resources */,
 				LOGO0023BF /* workbuddy.png in Resources */,
 				LOGO0024BF /* zed.png in Resources */,
+				LOGO0000BF /* antigravity.svg in Resources */,
+				LOGO0001BF /* claude-code.svg in Resources */,
+				LOGO0002BF /* codebuddy.svg in Resources */,
+				LOGO0003BF /* codex.svg in Resources */,
+				LOGO0004BF /* copilot.svg in Resources */,
+				LOGO0005BF /* craft.svg in Resources */,
+				LOGO0006BF /* cursor.svg in Resources */,
+				LOGO0007BF /* deepseek.png in Resources */,
+				LOGO0008BF /* deepseek.svg in Resources */,
+				LOGO0009BF /* gemini.svg in Resources */,
+				LOGO0010BF /* glm.svg in Resources */,
+				LOGO0011BF /* goose.svg in Resources */,
+				LOGO0012BF /* grok.svg in Resources */,
+				LOGO0013BF /* hermes.svg in Resources */,
+				LOGO0014BF /* kilo.svg in Resources */,
+				LOGO0015BF /* kilocli.svg in Resources */,
+				LOGO0016BF /* kilocode.svg in Resources */,
+				LOGO0017BF /* kimi.svg in Resources */,
+				LOGO0018BF /* kiro.svg in Resources */,
+				LOGO0019BF /* mimo.svg in Resources */,
+				LOGO0020BF /* minimax.svg in Resources */,
+				LOGO0021BF /* ohmypi.svg in Resources */,
+				LOGO0022BF /* openclaw.svg in Resources */,
+				LOGO0023BF /* opencode.svg in Resources */,
+				LOGO0024BF /* pi.svg in Resources */,
+				LOGO0025BF /* qoder.png in Resources */,
+				LOGO0026BF /* qwen.svg in Resources */,
+				LOGO0027BF /* roocode.svg in Resources */,
+				LOGO0028BF /* trae.png in Resources */,
+				LOGO0029BF /* windsurf.svg in Resources */,
+				LOGO0030BF /* workbuddy.png in Resources */,
+				LOGO0031BF /* zed.png in Resources */,
 );
 			runOnlyForDeploymentPostprocessing = 0;
 		};
