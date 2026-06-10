@@ -152,13 +152,16 @@ struct SkillRowView: View {
                                 enabled: !isLinked
                             )
                         } label: {
-                            Text(agent.name)
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(isLinked ? Color.green.opacity(0.15) : Color.gray.opacity(0.1))
-                                .foregroundStyle(isLinked ? .green : .secondary)
-                                .clipShape(Capsule())
+                            HStack(spacing: 3) {
+                                AgentIconView(agentId: agent.id, size: 14)
+                                Text(agent.name)
+                                    .font(.caption2)
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(isLinked ? Color.green.opacity(0.15) : Color.gray.opacity(0.1))
+                            .foregroundStyle(isLinked ? .green : .secondary)
+                            .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
                     }

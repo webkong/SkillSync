@@ -14,12 +14,38 @@
 		D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE7A59897F40B96E50D193E /* ContentView.swift */; };
 		5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7624142D76074F79488525A5 /* SkillsListView.swift */; };
 		B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3475792B546ACD4469E9FB0 /* AgentsListView.swift */; };
+		D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */; };
 		75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */; };
 		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
 		B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */; };
 
+		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
+		LOGO0001BF /* claude-code.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0001FR /* claude-code.svg */; };
+		LOGO0002BF /* codebuddy.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0002FR /* codebuddy.svg */; };
+		LOGO0003BF /* codex.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0003FR /* codex.svg */; };
+		LOGO0004BF /* copilot.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0004FR /* copilot.svg */; };
+		LOGO0005BF /* cursor.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0005FR /* cursor.svg */; };
+		LOGO0006BF /* deepseek.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0006FR /* deepseek.png */; };
+		LOGO0007BF /* deepseek.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0007FR /* deepseek.svg */; };
+		LOGO0008BF /* gemini.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0008FR /* gemini.svg */; };
+		LOGO0009BF /* glm.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0009FR /* glm.svg */; };
+		LOGO0010BF /* grok.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0010FR /* grok.svg */; };
+		LOGO0011BF /* hermes.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0011FR /* hermes.svg */; };
+		LOGO0012BF /* kilo.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0012FR /* kilo.svg */; };
+		LOGO0013BF /* kimi.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0013FR /* kimi.svg */; };
+		LOGO0014BF /* kiro.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0014FR /* kiro.svg */; };
+		LOGO0015BF /* mimo.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0015FR /* mimo.svg */; };
+		LOGO0016BF /* minimax.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0016FR /* minimax.svg */; };
+		LOGO0017BF /* openclaw.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0017FR /* openclaw.svg */; };
+		LOGO0018BF /* opencode.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0018FR /* opencode.svg */; };
+		LOGO0019BF /* qoder.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0019FR /* qoder.png */; };
+		LOGO0020BF /* qwen.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0020FR /* qwen.svg */; };
+		LOGO0021BF /* trae.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0021FR /* trae.png */; };
+		LOGO0022BF /* windsurf.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0022FR /* windsurf.svg */; };
+		LOGO0023BF /* workbuddy.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0023FR /* workbuddy.png */; };
+		LOGO0024BF /* zed.png in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0024FR /* zed.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +56,7 @@
 		BEE7A59897F40B96E50D193E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7624142D76074F79488525A5 /* SkillsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsListView.swift; sourceTree = "<group>"; };
 		E3475792B546ACD4469E9FB0 /* AgentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsListView.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentIconView.swift; sourceTree = "<group>"; };
 		B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAgentSheet.swift; sourceTree = "<group>"; };
 		A60B9BFF74FB99CA1C726D68 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -38,6 +65,31 @@
 		B9693C1AD3E74080D3204EE9 /* SkillsManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillsManager-Bridging-Header.h; sourceTree = "<group>"; };
 		C2D27BB31EBC6B5686590172 /* SkillsManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillsManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 
+		LOGO0000FR /* antigravity.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = antigravity.svg; sourceTree = "<group>"; };
+		LOGO0001FR /* claude-code.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = claude-code.svg; sourceTree = "<group>"; };
+		LOGO0002FR /* codebuddy.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = codebuddy.svg; sourceTree = "<group>"; };
+		LOGO0003FR /* codex.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = codex.svg; sourceTree = "<group>"; };
+		LOGO0004FR /* copilot.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = copilot.svg; sourceTree = "<group>"; };
+		LOGO0005FR /* cursor.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = cursor.svg; sourceTree = "<group>"; };
+		LOGO0006FR /* deepseek.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deepseek.png; sourceTree = "<group>"; };
+		LOGO0007FR /* deepseek.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = deepseek.svg; sourceTree = "<group>"; };
+		LOGO0008FR /* gemini.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = gemini.svg; sourceTree = "<group>"; };
+		LOGO0009FR /* glm.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = glm.svg; sourceTree = "<group>"; };
+		LOGO0010FR /* grok.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = grok.svg; sourceTree = "<group>"; };
+		LOGO0011FR /* hermes.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = hermes.svg; sourceTree = "<group>"; };
+		LOGO0012FR /* kilo.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kilo.svg; sourceTree = "<group>"; };
+		LOGO0013FR /* kimi.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kimi.svg; sourceTree = "<group>"; };
+		LOGO0014FR /* kiro.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = kiro.svg; sourceTree = "<group>"; };
+		LOGO0015FR /* mimo.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = mimo.svg; sourceTree = "<group>"; };
+		LOGO0016FR /* minimax.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = minimax.svg; sourceTree = "<group>"; };
+		LOGO0017FR /* openclaw.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = openclaw.svg; sourceTree = "<group>"; };
+		LOGO0018FR /* opencode.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = opencode.svg; sourceTree = "<group>"; };
+		LOGO0019FR /* qoder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = qoder.png; sourceTree = "<group>"; };
+		LOGO0020FR /* qwen.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = qwen.svg; sourceTree = "<group>"; };
+		LOGO0021FR /* trae.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trae.png; sourceTree = "<group>"; };
+		LOGO0022FR /* windsurf.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = windsurf.svg; sourceTree = "<group>"; };
+		LOGO0023FR /* workbuddy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = workbuddy.png; sourceTree = "<group>"; };
+		LOGO0024FR /* zed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zed.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -79,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				E3475792B546ACD4469E9FB0 /* Views/AgentsPanel/AgentsListView.swift */,
+				F1A2B3C4D5E6F7A8B9C0D1E2 /* Views/AgentsPanel/AgentIconView.swift */,
 				B21297EF8F0E49196D39BB80 /* Views/AgentsPanel/AddAgentSheet.swift */,
 			);
 			path = AgentsPanel;
@@ -117,7 +170,8 @@
 			children = (
 				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
 				4637E3EAAF19BEB63873D5A6 /* Resources/SkillsManager.entitlements */,
-			);
+							LOGOGRP /* brand-logos */,
+);
 			path = Resources;
 			sourceTree = "<group>";
 		};
@@ -150,6 +204,38 @@
 			sourceTree = "<group>";
 		};
 
+		LOGOGRP /* brand-logos */ = {
+			isa = PBXGroup;
+			children = (
+				LOGO0000FR /* brand-logos/antigravity.svg */,
+				LOGO0001FR /* brand-logos/claude-code.svg */,
+				LOGO0002FR /* brand-logos/codebuddy.svg */,
+				LOGO0003FR /* brand-logos/codex.svg */,
+				LOGO0004FR /* brand-logos/copilot.svg */,
+				LOGO0005FR /* brand-logos/cursor.svg */,
+				LOGO0006FR /* brand-logos/deepseek.png */,
+				LOGO0007FR /* brand-logos/deepseek.svg */,
+				LOGO0008FR /* brand-logos/gemini.svg */,
+				LOGO0009FR /* brand-logos/glm.svg */,
+				LOGO0010FR /* brand-logos/grok.svg */,
+				LOGO0011FR /* brand-logos/hermes.svg */,
+				LOGO0012FR /* brand-logos/kilo.svg */,
+				LOGO0013FR /* brand-logos/kimi.svg */,
+				LOGO0014FR /* brand-logos/kiro.svg */,
+				LOGO0015FR /* brand-logos/mimo.svg */,
+				LOGO0016FR /* brand-logos/minimax.svg */,
+				LOGO0017FR /* brand-logos/openclaw.svg */,
+				LOGO0018FR /* brand-logos/opencode.svg */,
+				LOGO0019FR /* brand-logos/qoder.png */,
+				LOGO0020FR /* brand-logos/qwen.svg */,
+				LOGO0021FR /* brand-logos/trae.png */,
+				LOGO0022FR /* brand-logos/windsurf.svg */,
+				LOGO0023FR /* brand-logos/workbuddy.png */,
+				LOGO0024FR /* brand-logos/zed.png */,
+			);
+			path = brand-logos;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -214,7 +300,32 @@
 			files = (
 				26870478A43345430FE7EE4C /* Info.plist in Resources */,
 				B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */,
-			);
+							LOGO0000BF /* antigravity.svg in Resources */,
+				LOGO0001BF /* claude-code.svg in Resources */,
+				LOGO0002BF /* codebuddy.svg in Resources */,
+				LOGO0003BF /* codex.svg in Resources */,
+				LOGO0004BF /* copilot.svg in Resources */,
+				LOGO0005BF /* cursor.svg in Resources */,
+				LOGO0006BF /* deepseek.png in Resources */,
+				LOGO0007BF /* deepseek.svg in Resources */,
+				LOGO0008BF /* gemini.svg in Resources */,
+				LOGO0009BF /* glm.svg in Resources */,
+				LOGO0010BF /* grok.svg in Resources */,
+				LOGO0011BF /* hermes.svg in Resources */,
+				LOGO0012BF /* kilo.svg in Resources */,
+				LOGO0013BF /* kimi.svg in Resources */,
+				LOGO0014BF /* kiro.svg in Resources */,
+				LOGO0015BF /* mimo.svg in Resources */,
+				LOGO0016BF /* minimax.svg in Resources */,
+				LOGO0017BF /* openclaw.svg in Resources */,
+				LOGO0018BF /* opencode.svg in Resources */,
+				LOGO0019BF /* qoder.png in Resources */,
+				LOGO0020BF /* qwen.svg in Resources */,
+				LOGO0021BF /* trae.png in Resources */,
+				LOGO0022BF /* windsurf.svg in Resources */,
+				LOGO0023BF /* workbuddy.png in Resources */,
+				LOGO0024BF /* zed.png in Resources */,
+);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 
@@ -255,6 +366,7 @@
 				D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */,
 				5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */,
 				B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */,
+				D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */,
 				75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */,
 				3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */,
 				D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */,

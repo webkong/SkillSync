@@ -64,9 +64,7 @@ struct AgentRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: agent.icon ?? "puzzlepiece")
-                .frame(width: 28, height: 28)
-                .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
+            AgentIconView(agentId: agent.id, size: 32)
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
