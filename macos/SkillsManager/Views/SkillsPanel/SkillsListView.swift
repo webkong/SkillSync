@@ -65,10 +65,8 @@ struct SkillsListView: View {
                     description: Text("Click Fetch to scan agent directories")
                 )
             } else {
-                List {
-                    ForEach(filteredSkills) { skill in
-                        OrganizedSkillRowView(skill: skill)
-                    }
+                List(filteredSkills) { skill in
+                    OrganizedSkillRowView(skill: skill)
                 }
                 .listStyle(.inset)
             }
@@ -137,62 +135,40 @@ struct OrganizedSkillRowView: View {
         return appState.agents.filter { visibleIds.contains($0.id) }
     }
 
+    /// Find the link info for a specific agent for this skill.
+    private func linkInfo(for agentId: String) -> SkillAgentLink? {
+        skill.linkedAgentsList.first { $0.agentId == agentId }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                // Organize button (only for unorganized skills)
-                if !skill.isOrganized {
-                    Button {
-                        appState.organizeSkill(skillId: skill.id, agentId: skill.agentSource)
-                    } label: {
-                        Image(systemName: "arrow.triangle.swap")
-                            .font(.caption)
-                            .foregroundStyle(.blue)
-                    }
-                    .buttonStyle(.plain)
-                    .help("Move to source directory")
-                }
+                // Action buttons (organize / restore)
+                actionButton
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(skill.name)
-                        .fontWeight(.medium)
-                    Text(skill.description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                    // Show source directory
-                    Text(skill.sourceDir)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+                Button {
+                    appState.selectedSkill = skill
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(skill.name)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                        Text(skill.description)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        // Source tag or directory path
+                        sourceIndicator
+                    }
                 }
+                .buttonStyle(.plain)
 
                 Spacer()
 
                 // Agent toggle buttons
                 HStack(spacing: 4) {
                     ForEach(visibleAgents) { agent in
-                        let isLinked = agent.linkedSkills.contains(skill.id)
-                        Button {
-                            appState.toggleSkillLink(
-                                skillId: skill.id,
-                                agentId: agent.id,
-                                enabled: !isLinked
-                            )
-                        } label: {
-                            HStack(spacing: 3) {
-                                AgentIconView(agentId: agent.id, size: 14)
-                                Text(agent.name)
-                                    .font(.caption2)
-                            }
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(isLinked ? Color.green.opacity(0.15) : Color.gray.opacity(0.1))
-                            .foregroundStyle(isLinked ? .green : .secondary)
-                            .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
+                        agentTag(for: agent)
                     }
                 }
             }
@@ -212,5 +188,131 @@ struct OrganizedSkillRowView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    // MARK: - Action Button
+
+    @ViewBuilder
+    private var actionButton: some View {
+        if !skill.isOrganized {
+            // Organize button
+            Button {
+                appState.organizeSkill(skillId: skill.id, agentId: skill.agentSource)
+            } label: {
+                Image(systemName: "arrow.triangle.swap")
+                    .font(.caption)
+                    .foregroundStyle(.blue)
+            }
+            .buttonStyle(.plain)
+            .help("Move to source directory")
+        } else if skill.isInSourceRoot {
+            // Restore button (only when organized and in source root)
+            Button {
+                appState.restoreSkill(skillId: skill.id)
+            } label: {
+                Image(systemName: "arrow.uturn.backward")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+            .buttonStyle(.plain)
+            .help("Restore back to original agent directory")
+        }
+    }
+
+    // MARK: - Source Indicator
+
+    @ViewBuilder
+    private var sourceIndicator: some View {
+        if skill.isInSourceRoot {
+            HStack(spacing: 4) {
+                Text("v\(skill.version)")
+                    .font(.caption2)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 1)
+                    .background(.gray.opacity(0.1), in: Capsule())
+                    .foregroundStyle(.secondary)
+                Text("Source")
+                    .font(.caption2)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 1)
+                    .background(.blue.opacity(0.1), in: Capsule())
+                    .foregroundStyle(.blue)
+            }
+        } else {
+            HStack(spacing: 4) {
+                Text("v\(skill.version)")
+                    .font(.caption2)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 1)
+                    .background(.gray.opacity(0.1), in: Capsule())
+                    .foregroundStyle(.secondary)
+                Text(skill.sourceDir)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+        }
+    }
+
+    // MARK: - Agent Tag
+
+    private func agentTag(for agent: AgentConfig) -> some View {
+        let link = linkInfo(for: agent.id)
+        let isLinked = link?.isSymlink == true
+        let isSource = link?.isSource == true && link?.isSymlink == false
+
+        return Button {
+            if isLinked {
+                // Click linked agent → remove symlink
+                appState.toggleSkillLink(skillId: skill.id, agentId: agent.id, enabled: false)
+            } else {
+                // Click unlinked or source agent → create symlink
+                appState.toggleSkillLink(skillId: skill.id, agentId: agent.id, enabled: true)
+            }
+        } label: {
+            HStack(spacing: 3) {
+                AgentIconView(agentId: agent.id, size: 14)
+                Text(agent.name)
+                    .font(.caption2)
+            }
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(tagBackground(isLinked: isLinked, isSource: isSource))
+            .foregroundStyle(tagForeground(isLinked: isLinked, isSource: isSource))
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .help(tagTooltip(isLinked: isLinked, isSource: isSource, agent: agent))
+    }
+
+    private func tagBackground(isLinked: Bool, isSource: Bool) -> Color {
+        if isLinked {
+            return Color.green.opacity(0.15)
+        } else if isSource {
+            return Color.purple.opacity(0.1)
+        } else {
+            return Color.gray.opacity(0.1)
+        }
+    }
+
+    private func tagForeground(isLinked: Bool, isSource: Bool) -> Color {
+        if isLinked {
+            return .green
+        } else if isSource {
+            return .purple
+        } else {
+            return .secondary
+        }
+    }
+
+    private func tagTooltip(isLinked: Bool, isSource: Bool, agent: AgentConfig) -> String {
+        if isLinked {
+            return "Click to remove symlink for \(agent.name)"
+        } else if isSource {
+            return "Source skill in \(agent.name) — click to create symlink"
+        } else {
+            return "Click to create symlink for \(agent.name)"
+        }
     }
 }

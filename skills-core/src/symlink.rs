@@ -283,6 +283,59 @@ impl SymlinkManager {
 
         Ok(organized)
     }
+
+    /// Restore an organized skill back to its original agent directory.
+    /// Removes the symlink at the agent's location, moves the real directory
+    /// back from source_root, and removes broken symlinks from other agents.
+    pub fn restore_skill(
+        &self,
+        skill_id: &str,
+        source_agent: &AgentConfig,
+        other_linked_agents: &[String],
+    ) -> Result<(), String> {
+        let source_dir = self.source_root.join(skill_id);
+
+        if !source_dir.exists() {
+            return Err(format!("Source directory not found: {}", source_dir.display()));
+        }
+
+        if source_dir.is_symlink() {
+            return Err("Source directory is a symlink, not a real directory".to_string());
+        }
+
+        let target_base = expand_path(&source_agent.skills_path)?;
+        let target_dir = target_base.join(skill_id);
+
+        // Remove symlink at agent's location
+        if target_dir.is_symlink() {
+            fs::remove_file(&target_dir)
+                .map_err(|e| format!("Failed to remove symlink at {}: {}", target_dir.display(), e))?;
+        }
+
+        // Remove broken symlinks from other agents
+        for agent_id in other_linked_agents {
+            if agent_id == &source_agent.id {
+                continue;
+            }
+            // We need to find the agent's skills path, but we don't have the full AgentConfig here.
+            // Instead, we'll handle this in the FFI layer which has access to the registry.
+        }
+
+        // Move directory back
+        if target_dir.exists() {
+            return Err(format!("Target directory already exists: {}", target_dir.display()));
+        }
+
+        if let Some(parent) = target_dir.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("Failed to create parent dir: {}", e))?;
+        }
+
+        fs::rename(&source_dir, &target_dir)
+            .map_err(|e| format!("Failed to move {} to {}: {}", source_dir.display(), target_dir.display(), e))?;
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]

@@ -56,6 +56,14 @@ struct ContentView: View {
     @ViewBuilder
     private var detailArea: some View {
         switch selectedTab {
+        case .skills:
+            if let skill = appState.selectedSkill {
+                SkillDetailView(skill: skill)
+            } else {
+                Text("Select a skill to view details")
+                    .foregroundStyle(.secondary)
+                    .padding()
+            }
         case .sync:
             if !appState.pendingChanges.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {

@@ -626,14 +626,20 @@ pub extern "C" fn asm_set_organized(handle: *mut CoreHandle) {
 
 /// Scan all agents and upsert skills into the database.
 /// This populates the DB with fresh scan data.
+/// Each skill records its relationship to all agents (source/symlink/path).
 #[no_mangle]
 pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
     if handle.is_null() { return 0; }
     let h = unsafe { &*handle };
 
     let agents = h.registry.all();
-    let mut all_skills: Vec<crate::models::SkillEntry> = Vec::new();
+    let source_root_str = h.scanner.source_root().to_string_lossy().to_string();
     let mut seen_ids: HashSet<String> = HashSet::new();
+
+    // Phase 1: collect all skill occurrences across all agents
+    // Map: skill_id -> Vec<(agent_id, is_symlink, path)>
+    let mut skill_occurrences: std::collections::HashMap<String, Vec<(String, bool, String)>> =
+        std::collections::HashMap::new();
 
     for agent in &agents {
         let expanded = match crate::agent_registry::expand_path(&agent.skills_path) {
@@ -645,39 +651,12 @@ pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
             for skill in skills {
                 let source_dir = PathBuf::from(&skill.source_dir);
                 let is_symlink = source_dir.is_symlink();
-                
-                // Mark organized if skill is in source_root (not a symlink)
-                let is_in_source = skill.source_dir.starts_with(&h.scanner.source_root().to_string_lossy().to_string());
-                let is_organized = is_in_source || is_symlink;
+                let path = skill.source_dir.clone();
 
-                if !seen_ids.contains(&skill.id) {
-                    seen_ids.insert(skill.id.clone());
-                    
-                    // Extract real description from SKILL.md
-                    let desc = crate::scanner::extract_description(
-                        &PathBuf::from(&skill.source_dir).join("SKILL.md")
-                    );
-                    
-                    let tags_json = serde_json::to_string(&skill.manifest.tags).unwrap_or_default();
-                    let agents_json = serde_json::to_string(&skill.manifest.compatible_agents).unwrap_or_default();
-                    
-                    h.db.upsert_skill_with_agent(
-                        &skill.id,
-                        &skill.source_dir,
-                        &agent.id,
-                        &skill.manifest.name,
-                        if desc.is_empty() { &skill.manifest.description } else { &desc },
-                        &tags_json,
-                        &agents_json,
-                        &skill.manifest.version,
-                    ).ok();
-                    
-                    if is_organized {
-                        h.db.set_organized(&skill.id).ok();
-                    }
-                    
-                    all_skills.push(skill);
-                }
+                skill_occurrences
+                    .entry(skill.id.clone())
+                    .or_default()
+                    .push((agent.id.clone(), is_symlink, path));
             }
         }
     }
@@ -687,25 +666,208 @@ pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
         if default_skills_path.exists() {
             if let Ok(skills) = h.scanner.scan_path(&default_skills_path) {
                 for skill in skills {
-                    if !seen_ids.contains(&skill.id) {
-                        seen_ids.insert(skill.id.clone());
-                        let desc = crate::scanner::extract_description(
-                            &PathBuf::from(&skill.source_dir).join("SKILL.md")
-                        );
-                        let tags_json = serde_json::to_string(&skill.manifest.tags).unwrap_or_default();
-                        let agents_json = serde_json::to_string(&skill.manifest.compatible_agents).unwrap_or_default();
-                        h.db.upsert_skill_with_agent(
-                            &skill.id, &skill.source_dir, "default",
-                            &skill.manifest.name,
-                            if desc.is_empty() { &skill.manifest.description } else { &desc },
-                            &tags_json, &agents_json, &skill.manifest.version,
-                        ).ok();
-                        all_skills.push(skill);
-                    }
+                    let source_dir = PathBuf::from(&skill.source_dir);
+                    let is_symlink = source_dir.is_symlink();
+                    let path = skill.source_dir.clone();
+
+                    skill_occurrences
+                        .entry(skill.id.clone())
+                        .or_default()
+                        .push(("default".to_string(), is_symlink, path));
                 }
             }
         }
     }
 
-    all_skills.len() as u8
+    // Phase 2: For each skill, find the canonical source_dir and build linked_agents
+    // Priority: non-symlink > symlink, first found wins
+    for (skill_id, occurrences) in &skill_occurrences {
+        if seen_ids.contains(skill_id) {
+            continue;
+        }
+        seen_ids.insert(skill_id.clone());
+
+        // Find canonical source_dir (prefer non-symlink)
+        let mut canonical_dir = String::new();
+        let mut canonical_agent = String::new();
+        for (agent_id, is_symlink, path) in occurrences {
+            if canonical_dir.is_empty() || (!is_symlink && canonical_dir.is_empty()) {
+                canonical_dir = path.clone();
+                canonical_agent = agent_id.clone();
+            }
+            if !is_symlink && canonical_dir.is_empty() {
+                canonical_dir = path.clone();
+                canonical_agent = agent_id.clone();
+            }
+        }
+
+        if canonical_dir.is_empty() {
+            continue;
+        }
+
+        // Build linked_agents JSON
+        let mut links: Vec<crate::models::SkillAgentLink> = Vec::new();
+        for (agent_id, is_symlink, path) in occurrences {
+            let is_source = path.starts_with(&source_root_str);
+            links.push(crate::models::SkillAgentLink {
+                agent_id: agent_id.clone(),
+                is_source,
+                is_symlink: *is_symlink,
+                path: path.clone(),
+            });
+        }
+
+        let linked_agents_json = serde_json::to_string(&links).unwrap_or_else(|_| "[]".to_string());
+
+        // Read skill metadata from the canonical directory
+        let skill_path = PathBuf::from(&canonical_dir);
+        let manifest_path = skill_path.join("manifest.json");
+        let (name, description, tags, compatible_agents, version) = if manifest_path.is_file() {
+            match std::fs::read_to_string(&manifest_path) {
+                Ok(content) => {
+                    let manifest: crate::models::SkillManifest = serde_json::from_str(&content)
+                        .unwrap_or_else(|_| crate::models::SkillManifest {
+                            name: skill_id.clone(),
+                            description: format!("{} skill", skill_id),
+                            tags: vec![],
+                            compatible_agents: vec!["*".to_string()],
+                            version: "0.1.0".to_string(),
+                        });
+                    let desc = crate::scanner::extract_description(
+                        &skill_path.join("SKILL.md")
+                    );
+                    (
+                        manifest.name,
+                        if desc.is_empty() { manifest.description } else { desc },
+                        serde_json::to_string(&manifest.tags).unwrap_or_default(),
+                        serde_json::to_string(&manifest.compatible_agents).unwrap_or_default(),
+                        manifest.version,
+                    )
+                }
+                Err(_) => (
+                    skill_id.clone(),
+                    format!("{} skill", skill_id),
+                    "[]".to_string(),
+                    "[\"*\"]".to_string(),
+                    "0.1.0".to_string(),
+                ),
+            }
+        } else {
+            let desc = crate::scanner::extract_description(&skill_path.join("SKILL.md"));
+            (
+                skill_id.clone(),
+                if desc.is_empty() { format!("{} skill", skill_id) } else { desc },
+                "[]".to_string(),
+                "[\"*\"]".to_string(),
+                "0.1.0".to_string(),
+            )
+        };
+
+        // Determine is_organized
+        let is_in_source = canonical_dir.starts_with(&source_root_str);
+        let is_symlink = PathBuf::from(&canonical_dir).is_symlink();
+        let is_organized = is_in_source || is_symlink;
+
+        h.db.upsert_skill_with_agent(
+            &skill_id,
+            &canonical_dir,
+            &canonical_agent,
+            &name,
+            &description,
+            &tags,
+            &compatible_agents,
+            &version,
+            &linked_agents_json,
+        ).ok();
+
+        if is_organized {
+            h.db.set_organized(&skill_id).ok();
+        }
+    }
+
+    seen_ids.len() as u8
+}
+
+/// Restore an organized skill back to its original agent directory.
+/// Returns 1 on success, 0 on failure.
+#[no_mangle]
+pub extern "C" fn asm_restore_skill(
+    handle: *mut CoreHandle,
+    skill_id: *const c_char,
+) -> u8 {
+    if handle.is_null() { return 0; }
+    let h = unsafe { &mut *handle };
+    let sid = from_cstring(skill_id);
+
+    // Get the skill's current info from DB
+    let skills = h.db.get_all_skills().unwrap_or_default();
+    let skill = match skills.iter().find(|s| s.id == sid) {
+        Some(s) => s.clone(),
+        None => { eprintln!("Skill not found in DB: {}", sid); return 0; }
+    };
+
+    if !skill.is_organized {
+        eprintln!("Skill is not organized: {}", sid);
+        return 0;
+    }
+
+    // Parse linked_agents to find the source agent and other linked agents
+    let links: Vec<crate::models::SkillAgentLink> = 
+        serde_json::from_str(&skill.linked_agents).unwrap_or_default();
+
+    let source_agent_id = &skill.agent_source;
+    let source_agent = match h.registry.find(source_agent_id) {
+        Some(a) => a.clone(),
+        None => { eprintln!("Source agent not found: {}", source_agent_id); return 0; }
+    };
+
+    let other_linked: Vec<String> = links
+        .iter()
+        .filter(|l| l.agent_id != *source_agent_id && l.is_symlink)
+        .map(|l| l.agent_id.clone())
+        .collect();
+
+    // Restore: move directory back, remove symlink
+    match h.symlink.restore_skill(&sid, &source_agent, &other_linked) {
+        Ok(()) => {
+            // Remove broken symlinks from other agents
+            for agent_id in &other_linked {
+                if let Some(other_agent) = h.registry.find(agent_id) {
+                    let other_agent = other_agent.clone();
+                    h.symlink.remove_skill_link(&other_agent, &sid).ok();
+                    h.registry.unlink_skill(agent_id, &sid).ok();
+                }
+            }
+
+            // Update DB: new source_dir is in the agent's directory
+            let target_base = match crate::agent_registry::expand_path(&source_agent.skills_path) {
+                Ok(p) => p,
+                Err(_) => { eprintln!("Failed to expand agent path"); return 0; }
+            };
+            let new_source_dir = target_base.join(&sid).to_string_lossy().to_string();
+
+            // Build updated linked_agents: only the source agent, not a symlink, not in source_root
+            let new_links = vec![crate::models::SkillAgentLink {
+                agent_id: source_agent_id.clone(),
+                is_source: false,
+                is_symlink: false,
+                path: new_source_dir.clone(),
+            }];
+            let new_linked_json = serde_json::to_string(&new_links).unwrap_or_else(|_| "[]".to_string());
+
+            h.db.update_skill_location(
+                &sid,
+                &new_source_dir,
+                source_agent_id,
+                false, // no longer organized
+                &new_linked_json,
+            ).ok();
+
+            1
+        }
+        Err(e) => {
+            eprintln!("Restore skill failed: {}", e);
+            0
+        }
+    }
 }

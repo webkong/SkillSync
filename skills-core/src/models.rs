@@ -89,6 +89,15 @@ pub struct CustomAgentInput {
 
 // ── OrganizedSkill ──
 
+/// Describes a single Agent's relationship to a skill (source file, symlink, or both).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SkillAgentLink {
+    pub agent_id: String,
+    pub is_source: bool,    // skill is a real directory in source_root
+    pub is_symlink: bool,   // skill is a symlink
+    pub path: String,       // actual path in this agent's directory
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrganizedSkill {
     pub id: String,
@@ -100,6 +109,7 @@ pub struct OrganizedSkill {
     pub compatible_agents: String,
     pub version: String,
     pub is_organized: bool,
+    pub linked_agents: String,  // JSON: Vec<SkillAgentLink>
 }
 
 // ── GitStatus ──

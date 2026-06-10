@@ -125,6 +125,21 @@ struct WatcherEvent: Codable {
 
 // MARK: - OrganizedSkill
 
+/// Describes a single Agent's relationship to a skill.
+struct SkillAgentLink: Codable {
+    let agentId: String
+    let isSource: Bool
+    let isSymlink: Bool
+    let path: String
+
+    enum CodingKeys: String, CodingKey {
+        case agentId = "agent_id"
+        case isSource = "is_source"
+        case isSymlink = "is_symlink"
+        case path
+    }
+}
+
 struct OrganizedSkill: Codable, Identifiable {
     let id: String
     let sourceDir: String
@@ -135,6 +150,7 @@ struct OrganizedSkill: Codable, Identifiable {
     let compatibleAgents: String  // JSON array string from DB
     let version: String
     let isOrganized: Bool
+    let linkedAgents: String  // JSON: [SkillAgentLink]
 
     enum CodingKeys: String, CodingKey {
         case id, name, description, version
@@ -143,6 +159,7 @@ struct OrganizedSkill: Codable, Identifiable {
         case tags
         case compatibleAgents = "compatible_agents"
         case isOrganized = "is_organized"
+        case linkedAgents = "linked_agents"
     }
 
     var tagsList: [String] {
@@ -151,5 +168,18 @@ struct OrganizedSkill: Codable, Identifiable {
 
     var compatibleAgentsList: [String] {
         (try? JSONDecoder().decode([String].self, from: Data(compatibleAgents.utf8))) ?? []
+    }
+
+    var linkedAgentsList: [SkillAgentLink] {
+        guard let data = linkedAgents.data(using: .utf8),
+              let list = try? JSONDecoder().decode([SkillAgentLink].self, from: data) else {
+            return []
+        }
+        return list
+    }
+
+    /// Whether this skill is located in the source root (has source tag).
+    var isInSourceRoot: Bool {
+        linkedAgentsList.contains { $0.isSource }
     }
 }

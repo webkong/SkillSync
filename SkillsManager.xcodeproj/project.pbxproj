@@ -16,6 +16,7 @@
 		B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3475792B546ACD4469E9FB0 /* AgentsListView.swift */; };
 		D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */; };
 		75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */; };
+		D8B7BA54F526480AA8D41353 /* SkillDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7925B11F3F74EA0BB13550A /* SkillDetailView.swift */; };
 		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
@@ -91,6 +92,7 @@
 		E3475792B546ACD4469E9FB0 /* AgentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsListView.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F7A8B9C0D1E2 /* AgentIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentIconView.swift; sourceTree = "<group>"; };
 		B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAgentSheet.swift; sourceTree = "<group>"; };
+		C7925B11F3F74EA0BB13550A /* SkillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillDetailView.swift; sourceTree = "<group>"; };
 		A60B9BFF74FB99CA1C726D68 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePromptView.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			children = (
 				7624142D76074F79488525A5 /* Views/SkillsPanel/SkillsListView.swift */,
 				F2A1B3C4D5E6F7A8B9C0D1E2 /* Views/SkillsPanel/OrganizePromptView.swift */,
+				C7925B11F3F74EA0BB13550A /* Views/SkillsPanel/SkillDetailView.swift */,
 			);
 			path = SkillsPanel;
 			sourceTree = "<group>";
@@ -484,7 +487,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release/libskills_core.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -504,6 +507,7 @@
 				70DF6AF64E7C5E11BC307B89 /* DataModels.swift in Sources */,
 				D6D5F2838C2171ABCA5B4FE9 /* ContentView.swift in Sources */,
 				5F29E0D9F38F76A41CF1B1B0 /* SkillsListView.swift in Sources */,
+				D8B7BA54F526480AA8D41353 /* SkillDetailView.swift in Sources */,
 				B4250815E530AF5AF86912F1 /* AgentsListView.swift in Sources */,
 				D8C8E2B3A4F1C5D7E9A0B123 /* AgentIconView.swift in Sources */,
 				75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */,
@@ -651,12 +655,12 @@
 				"$(inherited)",
 				"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug",
+			LIBRARY_SEARCH_PATHS = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release",
 				);
-				OTHER_LDFLAGS = (
+			OTHER_LDFLAGS = (
 				"-force_load",
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release/libskills_core.a",
 				"-framework",
 				Security,
 				"-lz",
@@ -665,29 +669,29 @@
 				"-lssl",
 				"-lcrypto",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
-				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
-			};
-			name = Debug;
+			PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
+			SDKROOT = macosx;
+			SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
 		};
-		9A4DF478F372EEEC0888CC04 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
+		name = Debug;
+	};
+	9A4DF478F372EEEC0888CC04 /* Release */ = {
+		isa = XCBuildConfiguration;
+		buildSettings = {
+			CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
+			CODE_SIGN_STYLE = Automatic;
+			COMBINE_HIDPI_IMAGES = YES;
+			INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
+			LD_RUNPATH_SEARCH_PATHS = (
 				"$(inherited)",
 				"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug",
+			LIBRARY_SEARCH_PATHS = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release",
 				);
-				OTHER_LDFLAGS = (
+			OTHER_LDFLAGS = (
 				"-force_load",
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release/libskills_core.a",
 				"-framework",
 				Security,
 				"-lz",

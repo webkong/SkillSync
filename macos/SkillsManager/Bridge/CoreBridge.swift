@@ -144,6 +144,13 @@ final class CoreBridge: @unchecked Sendable {
         }
     }
 
+    func restoreSkill(_ skillId: String) -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return skillId.withCString { asm_restore_skill(h, $0) == 1 }
+        }
+    }
+
     func fetchAgentSkills() -> [SkillEntry] {
         return queue.sync {
             guard let h = handle,

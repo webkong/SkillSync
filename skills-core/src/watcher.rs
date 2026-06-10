@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::mpsc::{self, Receiver};
 use std::time::{Duration, Instant};
 
@@ -122,6 +122,7 @@ impl Drop for SkillWatcher {
 mod tests {
     use super::*;
     use std::fs;
+    use std::path::Path;
     use std::sync::{Arc, Mutex};
     use std::time::Duration;
     use tempfile::TempDir;

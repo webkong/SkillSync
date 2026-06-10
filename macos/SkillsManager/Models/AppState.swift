@@ -14,6 +14,7 @@ final class AppState: ObservableObject {
     @Published var pendingChanges: [PendingChange] = []
     @Published var pendingNewSkill: SkillEntry? = nil
     @Published var isLoading = false
+    @Published var selectedSkill: OrganizedSkill? = nil
 
     // MARK: - Initialization
 
@@ -63,10 +64,14 @@ final class AppState: ObservableObject {
         if enabled {
             if core.createSymlink(agentId: agentId, skillId: skillId) {
                 agents = core.listAgents()
+                _ = core.refreshSkillDb()
+                organizedSkills = core.getSkillList()
             }
         } else {
             if core.removeSymlink(agentId: agentId, skillId: skillId) {
                 agents = core.listAgents()
+                _ = core.refreshSkillDb()
+                organizedSkills = core.getSkillList()
             }
         }
     }
@@ -131,6 +136,14 @@ final class AppState: ObservableObject {
     func dismissOrganizePrompt() {
         core.setOrganized()
         showOrganizePrompt = false
+    }
+
+    func restoreSkill(skillId: String) {
+        if core.restoreSkill(skillId) {
+            _ = core.refreshSkillDb()
+            organizedSkills = core.getSkillList()
+            agents = core.listAgents()
+        }
     }
 
     // MARK: - Git Operations

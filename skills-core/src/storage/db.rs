@@ -35,6 +35,7 @@ impl Database {
                 compatible_agents TEXT NOT NULL DEFAULT '[\"*\"]',
                 version TEXT NOT NULL DEFAULT '0.1.0',
                 is_organized INTEGER NOT NULL DEFAULT 0,
+                linked_agents TEXT NOT NULL DEFAULT '[]',
                 updated_at TEXT NOT NULL DEFAULT ''
             );
             CREATE TABLE IF NOT EXISTS app_config (
@@ -44,6 +45,14 @@ impl Database {
         ",
             )
             .map_err(|e| format!("Failed to create tables: {}", e))?;
+
+        // Migration: add linked_agents column if it doesn't exist (for existing databases)
+        self.conn
+            .execute_batch(
+                "ALTER TABLE skill_metadata ADD COLUMN linked_agents TEXT NOT NULL DEFAULT '[]';",
+            )
+            .ok(); // Ignore error if column already exists
+
         Ok(())
     }
 
@@ -85,11 +94,12 @@ impl Database {
         tags: &str,
         compatible_agents: &str,
         version: &str,
+        linked_agents: &str,
     ) -> Result<(), String> {
         self.conn
             .execute(
-                "INSERT OR REPLACE INTO skill_metadata (id, source_dir, agent_source, name, description, tags, compatible_agents, version, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, datetime('now'))",
+                "INSERT OR REPLACE INTO skill_metadata (id, source_dir, agent_source, name, description, tags, compatible_agents, version, linked_agents, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, datetime('now'))",
                 params![
                     id,
                     source_dir,
@@ -98,7 +108,8 @@ impl Database {
                     description,
                     tags,
                     compatible_agents,
-                    version
+                    version,
+                    linked_agents,
                 ],
             )
             .map_err(|e| format!("Failed to upsert skill {}: {}", id, e))?;
@@ -111,7 +122,7 @@ impl Database {
         let mut stmt = self
             .conn
             .prepare(
-                "SELECT id, source_dir, agent_source, name, description, tags, compatible_agents, version, is_organized FROM skill_metadata ORDER BY name",
+                "SELECT id, source_dir, agent_source, name, description, tags, compatible_agents, version, is_organized, linked_agents FROM skill_metadata ORDER BY name",
             )
             .map_err(|e| format!("Failed to prepare query: {}", e))?;
 
@@ -127,6 +138,7 @@ impl Database {
                     compatible_agents: row.get(6)?,
                     version: row.get(7)?,
                     is_organized: row.get::<_, i32>(8)? != 0,
+                    linked_agents: row.get(9)?,
                 })
             })
             .map_err(|e| format!("Failed to query skills: {}", e))?;
@@ -144,7 +156,7 @@ impl Database {
         let mut stmt = self
             .conn
             .prepare(
-                "SELECT id, source_dir, agent_source, name, description, tags, compatible_agents, version, is_organized FROM skill_metadata WHERE is_organized = 0 ORDER BY name",
+                "SELECT id, source_dir, agent_source, name, description, tags, compatible_agents, version, is_organized, linked_agents FROM skill_metadata WHERE is_organized = 0 ORDER BY name",
             )
             .map_err(|e| format!("Failed to prepare query: {}", e))?;
 
@@ -160,6 +172,7 @@ impl Database {
                     compatible_agents: row.get(6)?,
                     version: row.get(7)?,
                     is_organized: false,
+                    linked_agents: row.get(9)?,
                 })
             })
             .map_err(|e| format!("Failed to query unorganized skills: {}", e))?;
@@ -207,6 +220,24 @@ impl Database {
         self.conn
             .execute("DELETE FROM skill_metadata", [])
             .map_err(|e| format!("Failed to clear skills: {}", e))?;
+        Ok(())
+    }
+
+    /// Update source_dir, is_organized, and linked_agents for a skill (used after restore).
+    pub fn update_skill_location(
+        &self,
+        skill_id: &str,
+        new_source_dir: &str,
+        new_agent_source: &str,
+        is_organized: bool,
+        linked_agents: &str,
+    ) -> Result<(), String> {
+        self.conn
+            .execute(
+                "UPDATE skill_metadata SET source_dir = ?1, agent_source = ?2, is_organized = ?3, linked_agents = ?4, updated_at = datetime('now') WHERE id = ?5",
+                params![new_source_dir, new_agent_source, is_organized as i32, linked_agents, skill_id],
+            )
+            .map_err(|e| format!("Failed to update skill location: {}", e))?;
         Ok(())
     }
 }
