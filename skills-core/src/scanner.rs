@@ -101,12 +101,14 @@ impl Scanner {
         Ok(new)
     }
 
-    /// Validate that a directory contains both manifest.json and SKILL.md.
+    /// Validate that a directory contains SKILL.md.
+    /// manifest.json is optional — if missing, a default manifest is generated.
     pub fn validate_skill_dir(path: &Path) -> bool {
-        path.join("manifest.json").is_file() && path.join("SKILL.md").is_file()
+        path.join("SKILL.md").is_file()
     }
 
     /// Parse a skill directory into a SkillEntry.
+    /// Reads manifest.json if present, otherwise generates a default manifest.
     fn parse_skill_dir(&self, path: &Path) -> Result<SkillEntry, String> {
         let id = path
             .file_name()
@@ -115,11 +117,21 @@ impl Scanner {
             .to_string();
 
         let manifest_path = path.join("manifest.json");
-        let manifest_content = fs::read_to_string(&manifest_path)
-            .map_err(|e| format!("Failed to read {}: {}", manifest_path.display(), e))?;
-
-        let manifest: SkillManifest = serde_json::from_str(&manifest_content)
-            .map_err(|e| format!("Failed to parse {}: {}", manifest_path.display(), e))?;
+        let manifest = if manifest_path.is_file() {
+            let manifest_content = fs::read_to_string(&manifest_path)
+                .map_err(|e| format!("Failed to read {}: {}", manifest_path.display(), e))?;
+            serde_json::from_str(&manifest_content)
+                .map_err(|e| format!("Failed to parse {}: {}", manifest_path.display(), e))?
+        } else {
+            // Generate default manifest from directory name
+            SkillManifest {
+                name: id.clone(),
+                description: format!("{} skill", id),
+                tags: Vec::new(),
+                compatible_agents: vec!["*".to_string()],
+                version: "0.1.0".to_string(),
+            }
+        };
 
         let installed_at = chrono::Utc::now().to_rfc3339();
 
@@ -190,12 +202,12 @@ mod tests {
         // Valid skill
         create_test_skill(dir.path(), "valid-skill", "Valid");
 
-        // Missing manifest.json
-        let missing_manifest = dir.path().join("no-manifest");
-        fs::create_dir_all(&missing_manifest).unwrap();
-        fs::write(missing_manifest.join("SKILL.md"), "# No manifest\n").unwrap();
+        // Missing manifest.json (now valid - uses default manifest)
+        let no_manifest = dir.path().join("no-manifest");
+        fs::create_dir_all(&no_manifest).unwrap();
+        fs::write(no_manifest.join("SKILL.md"), "# No manifest\n").unwrap();
 
-        // Missing SKILL.md
+        // Missing SKILL.md (still invalid)
         let missing_skill = dir.path().join("no-skill-md");
         fs::create_dir_all(&missing_skill).unwrap();
         fs::write(
@@ -214,8 +226,9 @@ mod tests {
         let scanner = Scanner::new(dir.path().to_path_buf());
         let skills = scanner.scan_all().unwrap();
 
-        assert_eq!(skills.len(), 1);
-        assert_eq!(skills[0].id, "valid-skill");
+        assert_eq!(skills.len(), 2); // valid-skill + no-manifest (with default manifest)
+        assert!(skills.iter().any(|s| s.id == "valid-skill"));
+        assert!(skills.iter().any(|s| s.id == "no-manifest"));
     }
 
     #[test]
@@ -245,11 +258,16 @@ mod tests {
 
         assert!(Scanner::validate_skill_dir(&valid_dir));
 
-        let invalid_dir = dir.path().join("invalid");
-        fs::create_dir_all(&invalid_dir).unwrap();
-        fs::write(invalid_dir.join("SKILL.md"), "# Skill").unwrap();
+        // A directory with only SKILL.md (no manifest) is now valid
+        let skill_only = dir.path().join("skill-only");
+        fs::create_dir_all(&skill_only).unwrap();
+        fs::write(skill_only.join("SKILL.md"), "# Skill only\n").unwrap();
+        assert!(Scanner::validate_skill_dir(&skill_only));
 
-        assert!(!Scanner::validate_skill_dir(&invalid_dir));
+        // A directory with neither SKILL.md nor manifest is invalid
+        let empty_dir = dir.path().join("empty");
+        fs::create_dir_all(&empty_dir).unwrap();
+        assert!(!Scanner::validate_skill_dir(&empty_dir));
     }
 
     #[test]

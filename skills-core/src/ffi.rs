@@ -514,5 +514,21 @@ pub extern "C" fn asm_fetch_agent_skills(handle: *mut CoreHandle) -> *mut c_char
         }
     }
 
+    // Also scan the default ~/.agent/skills directory
+    let default_skills = match crate::agent_registry::expand_path("~/.agent/skills") {
+        Ok(p) => p,
+        Err(_) => PathBuf::from(""),
+    };
+    if !default_skills.as_os_str().is_empty() && default_skills.exists() {
+        if let Ok(skills) = h.scanner.scan_path(&default_skills) {
+            for skill in skills {
+                if !seen_ids.contains(&skill.id) {
+                    seen_ids.insert(skill.id.clone());
+                    all_skills.push(skill);
+                }
+            }
+        }
+    }
+
     to_json_cstring(&all_skills)
 }
