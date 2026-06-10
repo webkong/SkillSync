@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 use crate::agent_registry::expand_path;
 use crate::models::{AgentConfig, LinkType};
+use crate::scanner::Scanner;
 
 pub struct SymlinkManager {
     source_root: PathBuf,
@@ -196,6 +197,91 @@ impl SymlinkManager {
                 .map_err(|e| format!("Failed to remove symlink {}: {}", path.display(), e))?;
         }
         Ok(())
+    }
+
+    /// Organize a single skill: move from agent directory to source_root, create symlink at original location.
+    pub fn organize_skill(
+        &self,
+        agent: &AgentConfig,
+        skill_id: &str,
+    ) -> Result<(), String> {
+        let target_base = expand_path(&agent.skills_path)?;
+        let source_dir = target_base.join(skill_id);
+
+        if !source_dir.exists() {
+            return Err(format!("Skill directory not found: {}", source_dir.display()));
+        }
+
+        // Don't organize if it's already a symlink
+        if source_dir.is_symlink() {
+            return Ok(());
+        }
+
+        let dest_dir = self.source_root.join(skill_id);
+
+        // If destination already exists, skip
+        if dest_dir.exists() {
+            return Ok(());
+        }
+
+        // Create destination parent
+        if let Some(parent) = dest_dir.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("Failed to create parent dir: {}", e))?;
+        }
+
+        // Move directory
+        fs::rename(&source_dir, &dest_dir)
+            .map_err(|e| format!("Failed to move {} to {}: {}", source_dir.display(), dest_dir.display(), e))?;
+
+        // Create symlink at original location
+        unix_fs::symlink(&dest_dir, &source_dir)
+            .map_err(|e| format!("Failed to create symlink: {}", e))?;
+
+        Ok(())
+    }
+
+    /// Organize all skills from all agents: move real directories to source_root, leave symlinks.
+    pub fn organize_all(
+        &self,
+        agents: &[AgentConfig],
+        scanner: &Scanner,
+    ) -> Result<Vec<(String, String)>, String> {
+        let mut organized = Vec::new();
+
+        for agent in agents {
+            let target_base = match expand_path(&agent.skills_path) {
+                Ok(p) => p,
+                Err(_) => continue,
+            };
+
+            if !target_base.exists() {
+                continue;
+            }
+
+            // Scan for skills in this agent's directory
+            let skills = scanner.scan_path(&target_base)?;
+
+            for skill in skills {
+                let source_dir = PathBuf::from(&skill.source_dir);
+
+                // Skip if already a symlink
+                if source_dir.is_symlink() {
+                    continue;
+                }
+
+                match self.organize_skill(agent, &skill.id) {
+                    Ok(()) => {
+                        organized.push((skill.id.clone(), agent.id.clone()));
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to organize skill {} from {}: {}", skill.id, agent.id, e);
+                    }
+                }
+            }
+        }
+
+        Ok(organized)
     }
 }
 

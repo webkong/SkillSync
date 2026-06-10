@@ -7,6 +7,7 @@ use crate::agent_registry::AgentRegistry;
 use crate::git_engine::GitEngine;
 use crate::models::{CustomAgentInput, GitStatusInfo, PendingChange, WatcherEvent};
 use crate::scanner::Scanner;
+use crate::storage::db::Database;
 use crate::symlink::SymlinkManager;
 use crate::watcher::SkillWatcher;
 
@@ -14,6 +15,7 @@ pub struct CoreHandle {
     pub registry: AgentRegistry,
     pub scanner: Scanner,
     pub symlink: SymlinkManager,
+    pub db: Database,
     pub git: Option<GitEngine>,
     pub watcher: Option<SkillWatcher>,
     pub config_dir: PathBuf,
@@ -77,6 +79,11 @@ pub extern "C" fn asm_init(source_root: *const c_char) -> *mut CoreHandle {
     let scanner = Scanner::new(source_root.clone());
     let symlink = SymlinkManager::new(source_root.clone());
 
+    let db = Database::open().unwrap_or_else(|e| {
+        eprintln!("asm_init: failed to open database: {}", e);
+        panic!("Cannot initialize database");
+    });
+
     // Try to open git repo if source_root is a git directory
     let git = GitEngine::open(&source_root).ok();
 
@@ -92,6 +99,7 @@ pub extern "C" fn asm_init(source_root: *const c_char) -> *mut CoreHandle {
         registry,
         scanner,
         symlink,
+        db,
         git,
         watcher: None,
         config_dir,
@@ -531,4 +539,173 @@ pub extern "C" fn asm_fetch_agent_skills(handle: *mut CoreHandle) -> *mut c_char
     }
 
     to_json_cstring(&all_skills)
+}
+
+/// Organize a single skill from an agent's directory to source_root.
+#[no_mangle]
+pub extern "C" fn asm_organize_skill(
+    handle: *mut CoreHandle,
+    skill_id: *const c_char,
+    agent_id: *const c_char,
+) -> u8 {
+    if handle.is_null() { return 0; }
+    let h = unsafe { &*handle };
+    let sid = from_cstring(skill_id);
+    let aid = from_cstring(agent_id);
+
+    let agent = match h.registry.find(&aid) {
+        Some(a) => a.clone(),
+        None => { eprintln!("Agent not found: {}", aid); return 0; }
+    };
+
+    match h.symlink.organize_skill(&agent, &sid) {
+        Ok(()) => {
+            h.db.set_organized(&sid).ok();
+            h.db.set_has_organized().ok();
+            1
+        }
+        Err(e) => {
+            eprintln!("Organize skill failed: {}", e);
+            0
+        }
+    }
+}
+
+/// Organize all skills from all agents.
+/// Returns JSON array of [skill_id, agent_id] pairs that were organized.
+#[no_mangle]
+pub extern "C" fn asm_organize_all(handle: *mut CoreHandle) -> *mut c_char {
+    if handle.is_null() { return std::ptr::null_mut(); }
+    let h = unsafe { &*handle };
+    let agents = h.registry.all();
+
+    match h.symlink.organize_all(&agents, &h.scanner) {
+        Ok(organized) => {
+            for (skill_id, _) in &organized {
+                h.db.set_organized(skill_id).ok();
+            }
+            h.db.set_has_organized().ok();
+            to_json_cstring(&organized)
+        }
+        Err(e) => {
+            eprintln!("Organize all failed: {}", e);
+            std::ptr::null_mut()
+        }
+    }
+}
+
+/// Get the full skill list from database (with organize status).
+#[no_mangle]
+pub extern "C" fn asm_get_skill_list(handle: *mut CoreHandle) -> *mut c_char {
+    if handle.is_null() { return std::ptr::null_mut(); }
+    let h = unsafe { &*handle };
+    match h.db.get_all_skills() {
+        Ok(skills) => to_json_cstring(&skills),
+        Err(e) => {
+            eprintln!("Get skill list failed: {}", e);
+            std::ptr::null_mut()
+        }
+    }
+}
+
+/// Check if user has ever organized skills.
+#[no_mangle]
+pub extern "C" fn asm_has_organized(handle: *mut CoreHandle) -> u8 {
+    if handle.is_null() { return 0; }
+    let h = unsafe { &*handle };
+    h.db.has_organized().unwrap_or(false) as u8
+}
+
+/// Mark that user has organized skills.
+#[no_mangle]
+pub extern "C" fn asm_set_organized(handle: *mut CoreHandle) {
+    if handle.is_null() { return; }
+    let h = unsafe { &*handle };
+    h.db.set_has_organized().ok();
+}
+
+/// Scan all agents and upsert skills into the database.
+/// This populates the DB with fresh scan data.
+#[no_mangle]
+pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
+    if handle.is_null() { return 0; }
+    let h = unsafe { &*handle };
+
+    let agents = h.registry.all();
+    let mut all_skills: Vec<crate::models::SkillEntry> = Vec::new();
+    let mut seen_ids: HashSet<String> = HashSet::new();
+
+    for agent in &agents {
+        let expanded = match crate::agent_registry::expand_path(&agent.skills_path) {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+
+        if let Ok(skills) = h.scanner.scan_path(&expanded) {
+            for skill in skills {
+                let source_dir = PathBuf::from(&skill.source_dir);
+                let is_symlink = source_dir.is_symlink();
+                
+                // Mark organized if skill is in source_root (not a symlink)
+                let is_in_source = skill.source_dir.starts_with(&h.scanner.source_root().to_string_lossy().to_string());
+                let is_organized = is_in_source || is_symlink;
+
+                if !seen_ids.contains(&skill.id) {
+                    seen_ids.insert(skill.id.clone());
+                    
+                    // Extract real description from SKILL.md
+                    let desc = crate::scanner::extract_description(
+                        &PathBuf::from(&skill.source_dir).join("SKILL.md")
+                    );
+                    
+                    let tags_json = serde_json::to_string(&skill.manifest.tags).unwrap_or_default();
+                    let agents_json = serde_json::to_string(&skill.manifest.compatible_agents).unwrap_or_default();
+                    
+                    h.db.upsert_skill_with_agent(
+                        &skill.id,
+                        &skill.source_dir,
+                        &agent.id,
+                        &skill.manifest.name,
+                        if desc.is_empty() { &skill.manifest.description } else { &desc },
+                        &tags_json,
+                        &agents_json,
+                        &skill.manifest.version,
+                    ).ok();
+                    
+                    if is_organized {
+                        h.db.set_organized(&skill.id).ok();
+                    }
+                    
+                    all_skills.push(skill);
+                }
+            }
+        }
+    }
+
+    // Also scan default ~/.agent/skills
+    if let Ok(default_skills_path) = crate::agent_registry::expand_path("~/.agent/skills") {
+        if default_skills_path.exists() {
+            if let Ok(skills) = h.scanner.scan_path(&default_skills_path) {
+                for skill in skills {
+                    if !seen_ids.contains(&skill.id) {
+                        seen_ids.insert(skill.id.clone());
+                        let desc = crate::scanner::extract_description(
+                            &PathBuf::from(&skill.source_dir).join("SKILL.md")
+                        );
+                        let tags_json = serde_json::to_string(&skill.manifest.tags).unwrap_or_default();
+                        let agents_json = serde_json::to_string(&skill.manifest.compatible_agents).unwrap_or_default();
+                        h.db.upsert_skill_with_agent(
+                            &skill.id, &skill.source_dir, "default",
+                            &skill.manifest.name,
+                            if desc.is_empty() { &skill.manifest.description } else { &desc },
+                            &tags_json, &agents_json, &skill.manifest.version,
+                        ).ok();
+                        all_skills.push(skill);
+                    }
+                }
+            }
+        }
+    }
+
+    all_skills.len() as u8
 }

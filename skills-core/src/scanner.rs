@@ -13,6 +13,10 @@ impl Scanner {
         Self { source_root }
     }
 
+    pub fn source_root(&self) -> &PathBuf {
+        &self.source_root
+    }
+
     /// Scan a single directory for skills (any path, not just source_root).
     pub fn scan_path(&self, path: &Path) -> Result<Vec<SkillEntry>, String> {
         let mut skills = Vec::new();
@@ -106,7 +110,80 @@ impl Scanner {
     pub fn validate_skill_dir(path: &Path) -> bool {
         path.join("SKILL.md").is_file()
     }
+}
 
+/// Extract description from SKILL.md (first paragraph after title, max 200 chars).
+pub fn extract_description(skill_md_path: &Path) -> String {
+    let content = match fs::read_to_string(skill_md_path) {
+        Ok(c) => c,
+        Err(_) => return String::new(),
+    };
+
+    let mut desc = String::new();
+    let mut in_frontmatter = false;
+    let mut frontmatter_done = false;
+    let mut skipped_title = false;
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+
+        // Skip YAML frontmatter
+        if !frontmatter_done {
+            if trimmed == "---" {
+                if !in_frontmatter {
+                    in_frontmatter = true;
+                    continue;
+                } else {
+                    in_frontmatter = false;
+                    frontmatter_done = true;
+                    continue;
+                }
+            }
+            if in_frontmatter {
+                continue;
+            }
+        }
+
+        // Skip markdown title lines (# ...)
+        if !skipped_title && trimmed.starts_with('#') {
+            skipped_title = true;
+            continue;
+        }
+        skipped_title = true;
+
+        // Skip empty lines at the start
+        if trimmed.is_empty() && desc.is_empty() {
+            continue;
+        }
+
+        if trimmed.is_empty() && !desc.is_empty() {
+            // Empty line after content - stop
+            break;
+        }
+
+        if !desc.is_empty() {
+            desc.push(' ');
+        }
+        desc.push_str(trimmed);
+    }
+
+    // Truncate to ~200 chars, breaking at word boundary
+    if desc.len() > 200 {
+        let mut end = 200;
+        while end > 0 && !desc.as_bytes()[end].is_ascii_whitespace() {
+            end -= 1;
+        }
+        if end == 0 {
+            end = 200;
+        }
+        desc.truncate(end);
+        desc.push_str("...");
+    }
+
+    desc
+}
+
+impl Scanner {
     /// Parse a skill directory into a SkillEntry.
     /// Reads manifest.json if present, otherwise generates a default manifest.
     fn parse_skill_dir(&self, path: &Path) -> Result<SkillEntry, String> {
