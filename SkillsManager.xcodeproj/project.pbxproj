@@ -18,6 +18,7 @@
 		75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */; };
 		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
 		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
 		B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */; };
 
@@ -92,6 +93,7 @@
 		B21297EF8F0E49196D39BB80 /* AddAgentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAgentSheet.swift; sourceTree = "<group>"; };
 		A60B9BFF74FB99CA1C726D68 /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePromptView.swift; sourceTree = "<group>"; };
 		E991F806D9CEFF3F7B30338C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillsManager.entitlements; sourceTree = "<group>"; };
 		B9693C1AD3E74080D3204EE9 /* SkillsManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillsManager-Bridging-Header.h; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				7624142D76074F79488525A5 /* Views/SkillsPanel/SkillsListView.swift */,
+				F2A1B3C4D5E6F7A8B9C0D1E2 /* Views/SkillsPanel/OrganizePromptView.swift */,
 			);
 			path = SkillsPanel;
 			sourceTree = "<group>";
@@ -506,6 +509,7 @@
 				75E0667EC4144C83070F6A9A /* AddAgentSheet.swift in Sources */,
 				3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */,
 				D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

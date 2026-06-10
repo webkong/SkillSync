@@ -122,3 +122,34 @@ struct WatcherEvent: Codable {
         case skillId = "skill_id"
     }
 }
+
+// MARK: - OrganizedSkill
+
+struct OrganizedSkill: Codable, Identifiable {
+    let id: String
+    let sourceDir: String
+    let agentSource: String
+    let name: String
+    let description: String
+    let tags: String       // JSON array string from DB
+    let compatibleAgents: String  // JSON array string from DB
+    let version: String
+    let isOrganized: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, description, version
+        case sourceDir = "source_dir"
+        case agentSource = "agent_source"
+        case tags
+        case compatibleAgents = "compatible_agents"
+        case isOrganized = "is_organized"
+    }
+
+    var tagsList: [String] {
+        (try? JSONDecoder().decode([String].self, from: Data(tags.utf8))) ?? []
+    }
+
+    var compatibleAgentsList: [String] {
+        (try? JSONDecoder().decode([String].self, from: Data(compatibleAgents.utf8))) ?? []
+    }
+}

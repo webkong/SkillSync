@@ -8,6 +8,8 @@ final class AppState: ObservableObject {
 
     @Published var agents: [AgentConfig] = []
     @Published var skills: [SkillEntry] = []
+    @Published var showOrganizePrompt = false
+    @Published var organizedSkills: [OrganizedSkill] = []
     @Published var gitStatus: GitStatusInfo = GitStatusInfo(status: "idle", message: nil)
     @Published var pendingChanges: [PendingChange] = []
     @Published var pendingNewSkill: SkillEntry? = nil
@@ -20,7 +22,11 @@ final class AppState: ObservableObject {
         defer { isLoading = false }
 
         agents = core.listAgents()
-        skills = core.listSkills()
+
+        // Refresh DB and get organized skill list
+        _ = core.refreshSkillDb()
+        organizedSkills = core.getSkillList()
+
         if let status = core.getGitStatus() {
             gitStatus = status
         }
@@ -78,8 +84,9 @@ final class AppState: ObservableObject {
 
     func fetchAgentSkills() {
         isLoading = true
-        let fetched = core.fetchAgentSkills()
-        skills = fetched
+        _ = core.refreshSkillDb()
+        organizedSkills = core.getSkillList()
+        skills = core.listSkills()
         isLoading = false
     }
 
@@ -91,6 +98,39 @@ final class AppState: ObservableObject {
         pendingNewSkill = nil
         agents = core.listAgents()
         skills = core.listSkills()
+    }
+
+    // MARK: - Skill Organization
+
+    func checkOrganizeStatus() {
+        if !core.hasOrganized() {
+            showOrganizePrompt = true
+        }
+    }
+
+    func organizeAll() {
+        isLoading = true
+        if core.organizeAll() {
+            _ = core.refreshSkillDb()
+            organizedSkills = core.getSkillList()
+            skills = core.listSkills()
+            core.setOrganized()
+            showOrganizePrompt = false
+        }
+        isLoading = false
+    }
+
+    func organizeSkill(skillId: String, agentId: String) {
+        if core.organizeSkill(skillId: skillId, agentId: agentId) {
+            _ = core.refreshSkillDb()
+            organizedSkills = core.getSkillList()
+            skills = core.listSkills()
+        }
+    }
+
+    func dismissOrganizePrompt() {
+        core.setOrganized()
+        showOrganizePrompt = false
     }
 
     // MARK: - Git Operations

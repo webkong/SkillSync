@@ -91,6 +91,59 @@ final class CoreBridge: @unchecked Sendable {
         }
     }
 
+    // MARK: - Skill Organization
+
+    func organizeSkill(skillId: String, agentId: String) -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return skillId.withCString { sid in
+                agentId.withCString { aid in
+                    asm_organize_skill(h, sid, aid)
+                }
+            } == 1
+        }
+    }
+
+    func organizeAll() -> Bool {
+        return queue.sync {
+            guard let h = handle,
+                  let ptr = asm_organize_all(h) else { return false }
+            defer { asm_free_string(ptr) }
+            return true
+        }
+    }
+
+    func getSkillList() -> [OrganizedSkill] {
+        return queue.sync {
+            guard let h = handle,
+                  let ptr = asm_get_skill_list(h) else { return [] }
+            defer { asm_free_string(ptr) }
+            let json = String(cString: ptr)
+            return (try? JSONDecoder().decode([OrganizedSkill].self, from: Data(json.utf8))) ?? []
+        }
+    }
+
+    func hasOrganized() -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return asm_has_organized(h) == 1
+        }
+    }
+
+    func setOrganized() {
+        queue.sync {
+            guard let h = handle else { return }
+            asm_set_organized(h)
+        }
+    }
+
+    func refreshSkillDb() -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return asm_refresh_skill_db(h) == 1
+        }
+    }
+
     func fetchAgentSkills() -> [SkillEntry] {
         return queue.sync {
             guard let h = handle,

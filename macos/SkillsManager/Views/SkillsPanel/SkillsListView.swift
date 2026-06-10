@@ -4,7 +4,6 @@ struct SkillsListView: View {
     @ObservedObject private var appState = AppState.shared
     @State private var searchText = ""
     @State private var filterMode: FilterMode = .all
-    @State private var skillToDelete: SkillEntry? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -42,6 +41,16 @@ struct SkillsListView: View {
                 }
                 .disabled(appState.isLoading)
                 .help("Scan all agent directories for skills")
+
+                Button {
+                    appState.organizeAll()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "folder.badge.gearshape")
+                        Text("Organize")
+                    }
+                }
+                .help("Move all skills to source directory and create symlinks")
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
@@ -49,18 +58,16 @@ struct SkillsListView: View {
             Divider()
 
             // Skill list
-            if filteredSkills.isEmpty {
+            if appState.organizedSkills.isEmpty {
                 ContentUnavailableView(
                     "No Skills",
                     systemImage: "puzzlepiece.extension",
-                    description: Text(searchText.isEmpty ? "Add skills to your source directory" : "No skills match your search")
+                    description: Text("Click Fetch to scan agent directories")
                 )
             } else {
                 List {
                     ForEach(filteredSkills) { skill in
-                        SkillRowView(skill: skill, onDelete: {
-                            skillToDelete = skill
-                        })
+                        OrganizedSkillRowView(skill: skill)
                     }
                 }
                 .listStyle(.inset)
@@ -68,7 +75,7 @@ struct SkillsListView: View {
 
             // Status bar
             HStack {
-                Text("\(filteredSkills.count) skills")
+                Text("\(appState.organizedSkills.count) skills")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -77,33 +84,15 @@ struct SkillsListView: View {
             .padding(.vertical, 6)
             .background(.bar)
         }
-        .alert("Delete Skill", isPresented: Binding(
-            get: { skillToDelete != nil },
-            set: { if !$0 { skillToDelete = nil } }
-        )) {
-            Button("Cancel", role: .cancel) {
-                skillToDelete = nil
-            }
-            Button("Delete", role: .destructive) {
-                if let skill = skillToDelete {
-                    appState.deleteSkill(skillId: skill.id)
-                    skillToDelete = nil
-                }
-            }
-        } message: {
-            if let skill = skillToDelete {
-                Text("This will delete \"\(skill.manifest.name)\" and remove all agent links. This action cannot be undone.")
-            }
-        }
     }
 
-    private var filteredSkills: [SkillEntry] {
-        var result = appState.skills
+    private var filteredSkills: [OrganizedSkill] {
+        var result = appState.organizedSkills
 
         if !searchText.isEmpty {
             result = result.filter {
-                $0.manifest.name.localizedCaseInsensitiveContains(searchText) ||
-                $0.manifest.description.localizedCaseInsensitiveContains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.description.localizedCaseInsensitiveContains(searchText)
             }
         }
 
@@ -135,11 +124,10 @@ struct SkillsListView: View {
     }
 }
 
-// MARK: - Skill Row
+// MARK: - Organized Skill Row
 
-struct SkillRowView: View {
-    let skill: SkillEntry
-    let onDelete: () -> Void
+struct OrganizedSkillRowView: View {
+    let skill: OrganizedSkill
 
     @ObservedObject private var appState = AppState.shared
     @AppStorage(AgentVisibilityStore.defaultsKey) private var visibleAgentsRaw = AgentVisibilityStore.defaultVisible.sorted().joined(separator: ",")
@@ -152,13 +140,32 @@ struct SkillRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
+                // Organize button (only for unorganized skills)
+                if !skill.isOrganized {
+                    Button {
+                        appState.organizeSkill(skillId: skill.id, agentId: skill.agentSource)
+                    } label: {
+                        Image(systemName: "arrow.triangle.swap")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Move to source directory")
+                }
+
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(skill.manifest.name)
+                    Text(skill.name)
                         .fontWeight(.medium)
-                    Text(skill.manifest.description)
+                    Text(skill.description)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
+                    // Show source directory
+                    Text(skill.sourceDir)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                 }
 
                 Spacer()
@@ -188,22 +195,12 @@ struct SkillRowView: View {
                         .buttonStyle(.plain)
                     }
                 }
-
-                Button {
-                    onDelete()
-                } label: {
-                    Image(systemName: "trash")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-                .help("Delete skill")
             }
 
             // Tags
-            if !skill.manifest.tags.isEmpty {
+            if !skill.tagsList.isEmpty {
                 HStack(spacing: 4) {
-                    ForEach(skill.manifest.tags, id: \.self) { tag in
+                    ForEach(skill.tagsList, id: \.self) { tag in
                         Text(tag)
                             .font(.caption2)
                             .padding(.horizontal, 4)

@@ -33,3 +33,11 @@ char* asm_get_pending_changes(void* handle);
 // File watcher
 uint8_t asm_start_watcher(void* handle);
 void  asm_stop_watcher(void* handle);
+
+// Skill organization
+uint8_t asm_organize_skill(void* handle, const char* skill_id, const char* agent_id);
+char* asm_organize_all(void* handle);
+char* asm_get_skill_list(void* handle);
+uint8_t asm_has_organized(void* handle);
+void  asm_set_organized(void* handle);
+uint8_t asm_refresh_skill_db(void* handle);
