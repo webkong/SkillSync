@@ -211,6 +211,12 @@ fn builtin_agents() -> Vec<AgentConfig> {
             "~/.qoder/skills",
             LinkType::Directory,
         ),
+        AgentConfig::builtin(
+            "hermes",
+            "Hermes",
+            "~/.hermes/skills",
+            LinkType::Directory,
+        ),
     ]
 }
 
@@ -225,7 +231,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let registry = AgentRegistry::new(dir.path()).unwrap();
         let agents = registry.all();
-        assert_eq!(agents.len(), 11);
+        assert_eq!(agents.len(), 12);
         assert!(agents.iter().any(|a| a.id == "claude-code"));
         assert!(agents.iter().any(|a| a.id == "cursor"));
         assert!(agents.iter().all(|a| a.is_builtin));
@@ -254,7 +260,7 @@ mod tests {
 
         // Verify persistence
         let agents = registry.all();
-        assert_eq!(agents.len(), 12); // 11 builtin + 1 custom
+        assert_eq!(agents.len(), 13); // 12 builtin + 1 custom
         assert!(agents.iter().any(|a| a.id == agent.id));
     }
 
@@ -272,10 +278,10 @@ mod tests {
             link_type: LinkType::Directory,
         };
         let agent = registry.add_custom(input).unwrap();
-        assert_eq!(registry.all().len(), 12);
+        assert_eq!(registry.all().len(), 13);
 
         registry.remove_custom(&agent.id).unwrap();
-        assert_eq!(registry.all().len(), 11);
+        assert_eq!(registry.all().len(), 12);
     }
 
     #[test]
