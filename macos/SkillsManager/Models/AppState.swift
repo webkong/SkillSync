@@ -76,6 +76,13 @@ final class AppState: ObservableObject {
         pendingNewSkill = nil
     }
 
+    func fetchAgentSkills() {
+        isLoading = true
+        let fetched = core.fetchAgentSkills()
+        skills = fetched
+        isLoading = false
+    }
+
     func enableNewSkill(forAgentIds agentIds: [String]) {
         guard let skill = pendingNewSkill else { return }
         for agentId in agentIds {

@@ -91,6 +91,16 @@ final class CoreBridge: @unchecked Sendable {
         }
     }
 
+    func fetchAgentSkills() -> [SkillEntry] {
+        return queue.sync {
+            guard let h = handle,
+                  let ptr = asm_fetch_agent_skills(h) else { return [] }
+            defer { asm_free_string(ptr) }
+            let json = String(cString: ptr)
+            return (try? JSONDecoder().decode([SkillEntry].self, from: Data(json.utf8))) ?? []
+        }
+    }
+
     // MARK: - Symlink Operations
 
     func createSymlink(agentId: String, skillId: String) -> Bool {

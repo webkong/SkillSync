@@ -19,6 +19,7 @@ char* asm_list_skills(void* handle);
 char* asm_get_skill(void* handle, const char* skill_id);
 uint8_t asm_delete_skill(void* handle, const char* skill_id);
 char* asm_detect_new_skills(void* handle);
+char* asm_fetch_agent_skills(void* handle);
 
 // Symlink operations
 uint8_t asm_create_symlink(void* handle, const char* agent_id, const char* skill_id);

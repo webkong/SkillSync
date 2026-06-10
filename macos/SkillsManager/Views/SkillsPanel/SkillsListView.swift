@@ -26,6 +26,22 @@ struct SkillsListView: View {
                 }
                 .pickerStyle(.menu)
                 .frame(width: 120)
+
+                Button {
+                    appState.fetchAgentSkills()
+                } label: {
+                    HStack(spacing: 4) {
+                        if appState.isLoading {
+                            ProgressView()
+                                .scaleEffect(0.6)
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        Text("Fetch")
+                    }
+                }
+                .disabled(appState.isLoading)
+                .help("Scan all agent directories for skills")
             }
             .padding(.horizontal)
             .padding(.vertical, 8)

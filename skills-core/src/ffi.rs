@@ -484,3 +484,35 @@ pub extern "C" fn asm_detect_new_skills(handle: *mut CoreHandle) -> *mut c_char 
         }
     }
 }
+
+/// Scan all built-in agent skills_path directories for skills.
+/// Returns JSON array of SkillEntry found across all agents.
+#[no_mangle]
+pub extern "C" fn asm_fetch_agent_skills(handle: *mut CoreHandle) -> *mut c_char {
+    if handle.is_null() {
+        return std::ptr::null_mut();
+    }
+    let h = unsafe { &*handle };
+
+    let agents = h.registry.all();
+    let mut all_skills: Vec<crate::models::SkillEntry> = Vec::new();
+    let mut seen_ids: HashSet<String> = HashSet::new();
+
+    for agent in &agents {
+        let expanded = match crate::agent_registry::expand_path(&agent.skills_path) {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+
+        if let Ok(skills) = h.scanner.scan_path(&expanded) {
+            for skill in skills {
+                if !seen_ids.contains(&skill.id) {
+                    seen_ids.insert(skill.id.clone());
+                    all_skills.push(skill);
+                }
+            }
+        }
+    }
+
+    to_json_cstring(&all_skills)
+}

@@ -13,6 +13,46 @@ impl Scanner {
         Self { source_root }
     }
 
+    /// Scan a single directory for skills (any path, not just source_root).
+    pub fn scan_path(&self, path: &Path) -> Result<Vec<SkillEntry>, String> {
+        let mut skills = Vec::new();
+
+        if !path.exists() || !path.is_dir() {
+            return Ok(skills);
+        }
+
+        let entries = fs::read_dir(path)
+            .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
+
+        for entry in entries {
+            let entry = match entry {
+                Ok(e) => e,
+                Err(_) => continue,
+            };
+
+            let sub_path = entry.path();
+            if !sub_path.is_dir() {
+                continue;
+            }
+
+            if let Some(name) = sub_path.file_name().and_then(|n| n.to_str()) {
+                if name.starts_with('.') {
+                    continue;
+                }
+            }
+
+            if !Self::validate_skill_dir(&sub_path) {
+                continue;
+            }
+
+            if let Ok(skill) = self.parse_skill_dir(&sub_path) {
+                skills.push(skill);
+            }
+        }
+
+        Ok(skills)
+    }
+
     /// Scan all skill directories under source_root (one level deep).
     /// Returns all valid SkillEntry objects.
     pub fn scan_all(&self) -> Result<Vec<SkillEntry>, String> {
