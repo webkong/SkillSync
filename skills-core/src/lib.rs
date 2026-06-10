@@ -5,3 +5,4 @@ pub mod scanner;
 pub mod symlink;
 pub mod git_engine;
 pub mod watcher;
+pub mod storage;

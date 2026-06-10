@@ -87,6 +87,21 @@ pub struct CustomAgentInput {
     pub link_type: LinkType,
 }
 
+// ── OrganizedSkill ──
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OrganizedSkill {
+    pub id: String,
+    pub source_dir: String,
+    pub agent_source: String,
+    pub name: String,
+    pub description: String,
+    pub tags: String,
+    pub compatible_agents: String,
+    pub version: String,
+    pub is_organized: bool,
+}
+
 // ── GitStatus ──
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
