@@ -68,16 +68,15 @@ struct SyncView: View {
                     }
 
                     // Push button
-                    if appState.gitStatus.status == "modified" || !appState.pendingChanges.isEmpty {
-                        Button {
-                            appState.pushChanges()
-                        } label: {
-                            Label("Push Changes", systemImage: "arrow.up.circle.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
+                    Button {
+                        appState.pushChanges()
+                    } label: {
+                        Label("Sync & Push", systemImage: "arrow.up.circle.fill")
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .disabled(appState.gitStatus.status == "pushing")
                 }
                 .padding()
             }

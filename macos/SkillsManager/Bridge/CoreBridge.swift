@@ -137,6 +137,22 @@ final class CoreBridge: @unchecked Sendable {
         }
     }
 
+    func stageAndPushAsync() async -> GitStatusInfo? {
+        return await withCheckedContinuation { continuation in
+            queue.async { [self] in
+                guard let h = handle,
+                      let ptr = asm_stage_and_push(h) else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                let json = String(cString: ptr)
+                asm_free_string(ptr)
+                let result = try? JSONDecoder().decode(GitStatusInfo.self, from: Data(json.utf8))
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
     func getPendingChanges() -> [PendingChange] {
         return queue.sync {
             guard let h = handle,

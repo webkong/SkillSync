@@ -89,10 +89,22 @@ final class AppState: ObservableObject {
     // MARK: - Git Operations
 
     func pushChanges() {
-        if let status = core.stageAndPush() {
-            gitStatus = status
-            if status.status == "synced" {
-                pendingChanges = []
+        isLoading = true
+        gitStatus = GitStatusInfo(status: "pushing", message: nil)
+        Task {
+            if let status = await core.stageAndPushAsync() {
+                await MainActor.run {
+                    gitStatus = status
+                    isLoading = false
+                    if status.status == "synced" {
+                        pendingChanges = []
+                    }
+                }
+            } else {
+                await MainActor.run {
+                    gitStatus = GitStatusInfo(status: "error", message: "Push failed")
+                    isLoading = false
+                }
             }
         }
     }
