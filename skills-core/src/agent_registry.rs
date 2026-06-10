@@ -217,6 +217,84 @@ fn builtin_agents() -> Vec<AgentConfig> {
             "~/.hermes/skills",
             LinkType::Directory,
         ),
+        AgentConfig::builtin(
+            "copilot",
+            "GitHub Copilot",
+            "~/.github/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "trae",
+            "Trae",
+            "~/.trae/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "zed",
+            "Zed",
+            "~/.zed/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "antigravity",
+            "Antigravity",
+            "~/.antigravity/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "kimi",
+            "Kimi",
+            "~/.kimi/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "grok",
+            "Grok",
+            "~/.grok/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "deepseek",
+            "DeepSeek",
+            "~/.deepseek/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "qwen",
+            "Qwen",
+            "~/.qwen/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "glm",
+            "GLM",
+            "~/.glm/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "minimax",
+            "MiniMax",
+            "~/.minimax/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "mimo",
+            "Mimo",
+            "~/.mimo/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "kilo",
+            "Kilo",
+            "~/.kilo/skills",
+            LinkType::Directory,
+        ),
+        AgentConfig::builtin(
+            "workbuddy",
+            "WorkBuddy",
+            "~/.workbuddy/skills",
+            LinkType::Directory,
+        ),
     ]
 }
 
@@ -231,7 +309,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let registry = AgentRegistry::new(dir.path()).unwrap();
         let agents = registry.all();
-        assert_eq!(agents.len(), 12);
+        assert_eq!(agents.len(), 25);
         assert!(agents.iter().any(|a| a.id == "claude-code"));
         assert!(agents.iter().any(|a| a.id == "cursor"));
         assert!(agents.iter().all(|a| a.is_builtin));
@@ -260,7 +338,7 @@ mod tests {
 
         // Verify persistence
         let agents = registry.all();
-        assert_eq!(agents.len(), 13); // 12 builtin + 1 custom
+        assert_eq!(agents.len(), 26); // 25 builtin + 1 custom
         assert!(agents.iter().any(|a| a.id == agent.id));
     }
 
@@ -278,10 +356,10 @@ mod tests {
             link_type: LinkType::Directory,
         };
         let agent = registry.add_custom(input).unwrap();
-        assert_eq!(registry.all().len(), 13);
+        assert_eq!(registry.all().len(), 26);
 
         registry.remove_custom(&agent.id).unwrap();
-        assert_eq!(registry.all().len(), 12);
+        assert_eq!(registry.all().len(), 25);
     }
 
     #[test]
