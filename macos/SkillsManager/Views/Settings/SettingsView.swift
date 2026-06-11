@@ -24,33 +24,23 @@ struct SettingsView: View {
     @ObservedObject private var appState = AppState.shared
 
     var body: some View {
-        TabView {
-            generalTab
-                .tabItem { Label("General", systemImage: "gear") }
-
-            agentsTab
-                .tabItem { Label("Agents", systemImage: "rectangle.stack") }
-
-            aboutTab
-                .tabItem { Label("About", systemImage: "info.circle") }
-        }
-        .frame(width: 520, height: 480)
-    }
-
-    // MARK: - General Tab
-
-    private var generalTab: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Settings")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                sourceRootSection
+            VStack(alignment: .leading, spacing: 24) {
+                generalSection
+                agentsSection
             }
             .padding(20)
         }
-        .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    // MARK: - General Section
+
+    private var generalSection: some View {
+        SettingsCard(title: "General") {
+            VStack(alignment: .leading, spacing: 12) {
+                sourceRootSection
+            }
+        }
     }
 
     private var sourceRootSection: some View {
@@ -92,35 +82,27 @@ struct SettingsView: View {
 
     // MARK: - Agents Tab
 
+    private var agentsSection: some View {
+        SettingsCard(title: "Agent Visibility") {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Select which agents appear in the Skills list. Dimmed agents have no local skills directory.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                FlowLayout(itemSpacing: 8, rowSpacing: 8) {
+                    ForEach(sortedAgents, id: \.id) { agent in
+                        agentChip(agent: agent)
+                    }
+                }
+            }
+        }
+    }
+
     private var sortedAgents: [AgentConfig] {
         appState.agents.sorted { a, b in
             if a.exists != b.exists { return a.exists } // existing first
             return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
         }
-    }
-
-    private var agentsTab: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Agent Visibility")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                Text("Select which agents appear in the Skills list. Only visible agents can have skills linked. Dimmed agents have no local skills directory.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                SettingsCard(title: "Visible Agents") {
-                    FlowLayout(itemSpacing: 8, rowSpacing: 8) {
-                        ForEach(sortedAgents, id: \.id) { agent in
-                            agentChip(agent: agent)
-                        }
-                    }
-                }
-            }
-            .padding(20)
-        }
-        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private func agentChip(agent: AgentConfig) -> some View {
@@ -166,27 +148,6 @@ struct SettingsView: View {
             visible.insert(id)
         }
         visibleAgentsRaw = AgentVisibilityStore.rawValue(from: visible, allSources: appState.agents.map(\.id))
-    }
-
-    // MARK: - About Tab
-
-    private var aboutTab: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("About")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                SettingsCard(title: "Agent Skills Manager") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        LabeledContent("Version", value: "0.1.0")
-                        LabeledContent("Build", value: "1")
-                    }
-                }
-            }
-            .padding(20)
-        }
-        .background(Color(nsColor: .windowBackgroundColor))
     }
 }
 

@@ -29,6 +29,9 @@ uint8_t asm_remove_symlink(void* handle, const char* agent_id, const char* skill
 char* asm_get_git_status(void* handle);
 char* asm_stage_and_push(void* handle);
 char* asm_get_pending_changes(void* handle);
+uint8_t asm_set_git_auth(void* handle, const char* token, const char* remote_url);
+char* asm_pull(void* handle);
+uint8_t asm_set_remote_url(void* handle, const char* url);
 
 // File watcher
 uint8_t asm_start_watcher(void* handle);

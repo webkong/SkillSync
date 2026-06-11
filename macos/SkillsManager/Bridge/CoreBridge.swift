@@ -233,6 +233,50 @@ final class CoreBridge: @unchecked Sendable {
         }
     }
 
+    func setGitAuth(token: String, remoteUrl: String) -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return token.withCString { tok in
+                remoteUrl.withCString { url in
+                    asm_set_git_auth(h, tok, url) == 1
+                }
+            }
+        }
+    }
+
+    func pull() -> GitStatusInfo? {
+        return queue.sync {
+            guard let h = handle,
+                  let ptr = asm_pull(h) else { return nil }
+            defer { asm_free_string(ptr) }
+            let json = String(cString: ptr)
+            return try? JSONDecoder().decode(GitStatusInfo.self, from: Data(json.utf8))
+        }
+    }
+
+    func pullAsync() async -> GitStatusInfo? {
+        return await withCheckedContinuation { continuation in
+            queue.async { [self] in
+                guard let h = handle,
+                      let ptr = asm_pull(h) else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                let json = String(cString: ptr)
+                asm_free_string(ptr)
+                let result = try? JSONDecoder().decode(GitStatusInfo.self, from: Data(json.utf8))
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    func setRemoteUrl(_ url: String) -> Bool {
+        return queue.sync {
+            guard let h = handle else { return false }
+            return url.withCString { asm_set_remote_url(h, $0) == 1 }
+        }
+    }
+
     // MARK: - File Watcher
 
     func startWatcher() -> Bool {

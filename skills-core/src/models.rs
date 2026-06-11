@@ -115,6 +115,14 @@ pub struct OrganizedSkill {
     pub linked_agents: String,  // JSON: Vec<SkillAgentLink>
 }
 
+// ── GitAuthInfo
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GitAuthInfo {
+    pub token: String,
+    pub remote_url: String,
+}
+
 // ── GitStatus ──
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -51,6 +51,10 @@ struct ContentView: View {
                 .tag(SidebarTab.agents)
             Label("Sync", systemImage: "arrow.triangle.merge")
                 .tag(SidebarTab.sync)
+            Label("Settings", systemImage: "gearshape")
+                .tag(SidebarTab.settings)
+            Label("About", systemImage: "info.circle")
+                .tag(SidebarTab.about)
         }
         .listStyle(.sidebar)
     }
@@ -79,6 +83,10 @@ struct ContentView: View {
             AgentsListView()
         case .sync:
             SyncView()
+        case .settings:
+            SettingsView()
+        case .about:
+            AboutView()
         }
     }
 
@@ -125,7 +133,7 @@ struct ContentView: View {
     }
 
     enum SidebarTab: String, CaseIterable {
-        case agents, skills, sync
+        case agents, skills, sync, settings, about
     }
 }
 

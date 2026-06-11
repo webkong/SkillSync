@@ -1,0 +1,18 @@
+# Xcode
+DerivedData/
+*.xcworkspace
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Rust
+skills-core/target/
+
+# macOS
+.DS_Store

@@ -1,0 +1,13 @@
+# Cargo configuration for skills-core
+# This project builds for ARM64 macOS (aarch64-apple-darwin)
+
+[target.aarch64-apple-darwin]
+# OpenSSL from Homebrew (ARM64)
+rustflags = ["-L", "/opt/homebrew/opt/openssl@3/lib"]
+
+[env]
+OPENSSL_DIR = { value = "/opt/homebrew/opt/openssl@3", force = true }
+
+[build]
+# Default target for this project
+target = "aarch64-apple-darwin"

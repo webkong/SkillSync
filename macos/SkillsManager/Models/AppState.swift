@@ -158,7 +158,35 @@ final class AppState: ObservableObject {
 
     // MARK: - Git Operations
 
+    /// Read current provider's token and repo URL from UserDefaults, push to Rust core.
+    private func applyGitAuth() {
+        let defaults = UserDefaults.standard
+        let providerRaw = defaults.string(forKey: "syncProvider") ?? "GitHub"
+        let provider = GitProvider(rawValue: providerRaw) ?? .github
+
+        let token: String
+        let tokenSaved: Bool
+        switch provider {
+        case .github:
+            token = defaults.string(forKey: "syncToken_github") ?? ""
+            tokenSaved = defaults.bool(forKey: "syncTokenSaved_github")
+        case .gitlab:
+            token = defaults.string(forKey: "syncToken_gitlab") ?? ""
+            tokenSaved = defaults.bool(forKey: "syncTokenSaved_gitlab")
+        case .other:
+            token = defaults.string(forKey: "syncToken_other") ?? ""
+            tokenSaved = defaults.bool(forKey: "syncTokenSaved_other")
+        }
+
+        let repoURL = defaults.string(forKey: "syncRepoURL") ?? ""
+
+        if tokenSaved && !token.isEmpty && !repoURL.isEmpty {
+            _ = core.setGitAuth(token: token, remoteUrl: repoURL)
+        }
+    }
+
     func pushChanges() {
+        applyGitAuth()
         isLoading = true
         gitStatus = GitStatusInfo(status: "pushing", message: nil)
         Task {
@@ -173,6 +201,26 @@ final class AppState: ObservableObject {
             } else {
                 await MainActor.run {
                     gitStatus = GitStatusInfo(status: "error", message: "Push failed")
+                    isLoading = false
+                }
+            }
+        }
+    }
+
+    func pullChanges() {
+        applyGitAuth()
+        isLoading = true
+        gitStatus = GitStatusInfo(status: "pulling", message: nil)
+        Task {
+            if let status = await core.pullAsync() {
+                await MainActor.run {
+                    gitStatus = status
+                    isLoading = false
+                    pendingChanges = core.getPendingChanges()
+                }
+            } else {
+                await MainActor.run {
+                    gitStatus = GitStatusInfo(status: "error", message: "Pull failed")
                     isLoading = false
                 }
             }

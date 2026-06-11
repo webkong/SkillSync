@@ -4,6 +4,13 @@ struct AgentsListView: View {
     @ObservedObject private var appState = AppState.shared
     @State private var showAddSheet = false
 
+    private var sortedAgents: [AgentConfig] {
+        appState.agents.sorted { a, b in
+            if a.exists != b.exists { return a.exists }
+            return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -29,7 +36,7 @@ struct AgentsListView: View {
                 )
             } else {
                 List {
-                    ForEach(appState.agents) { agent in
+                    ForEach(sortedAgents) { agent in
                         AgentRowView(agent: agent)
                     }
                 }
@@ -78,6 +85,14 @@ struct AgentRowView: View {
                             .background(.blue.opacity(0.12), in: Capsule())
                             .foregroundStyle(.blue)
                     }
+                    if !agent.exists {
+                        Text("Not Installed")
+                            .font(.caption2)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 1)
+                            .background(.gray.opacity(0.12), in: Capsule())
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Text(agent.skillsPath)
                     .font(.caption)
@@ -96,6 +111,7 @@ struct AgentRowView: View {
                 .background(.quinary, in: Capsule())
         }
         .padding(.vertical, 4)
+        .opacity(agent.exists ? 1.0 : 0.45)
         .contextMenu {
             Button("Show in Finder") {
                 let expanded = CoreBridge.shared.expandPath(agent.skillsPath)

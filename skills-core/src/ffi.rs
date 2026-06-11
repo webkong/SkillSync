@@ -17,6 +17,7 @@ pub struct CoreHandle {
     pub symlink: SymlinkManager,
     pub db: Database,
     pub git: Option<GitEngine>,
+    pub git_auth: Option<crate::models::GitAuthInfo>,
     pub watcher: Option<SkillWatcher>,
     pub config_dir: PathBuf,
     pub known_skill_ids: HashSet<String>,
@@ -101,6 +102,7 @@ pub extern "C" fn asm_init(source_root: *const c_char) -> *mut CoreHandle {
         symlink,
         db,
         git,
+        git_auth: None,
         watcher: None,
         config_dir,
         known_skill_ids,
@@ -154,11 +156,17 @@ pub extern "C" fn asm_list_agents(handle: *mut CoreHandle) -> *mut c_char {
     }
     let h = unsafe { &*handle };
     let mut agents = h.registry.all();
-    // Check which agent skill directories actually exist on disk
+    // Check which agent skill directories actually exist on disk, and count skills
     for agent in &mut agents {
         agent.exists = crate::agent_registry::expand_path(&agent.skills_path)
             .map(|p| p.exists() && p.is_dir())
             .unwrap_or(false);
+        // Count skills in this agent's directory (real dirs + symlinks)
+        if let Ok(expanded) = crate::agent_registry::expand_path(&agent.skills_path) {
+            if let Ok(skills) = h.scanner.scan_path(&expanded) {
+                agent.linked_skills = skills.iter().map(|s| s.id.clone()).collect();
+            }
+        }
     }
     to_json_cstring(&agents)
 }
@@ -370,13 +378,16 @@ pub extern "C" fn asm_stage_and_push(handle: *mut CoreHandle) -> *mut c_char {
     if handle.is_null() {
         return std::ptr::null_mut();
     }
-    let h = unsafe { &*handle };
+    let h = unsafe { &mut *handle };
 
-    match &h.git {
-        Some(git) => match git.stage_and_push("skill: sync from Agent Skills Manager") {
-            Ok(status) => to_json_cstring(&status),
-            Err(e) => to_json_cstring(&GitStatusInfo::error(&e)),
-        },
+    match &mut h.git {
+        Some(git) => {
+            let token = h.git_auth.as_ref().map(|a| a.token.as_str());
+            match git.stage_and_push("skill: sync from Agent Skills Manager", token) {
+                Ok(status) => to_json_cstring(&status),
+                Err(e) => to_json_cstring(&GitStatusInfo::error(&e)),
+            }
+        }
         None => to_json_cstring(&GitStatusInfo::error("No git repository configured")),
     }
 }
@@ -403,6 +414,101 @@ pub extern "C" fn asm_get_pending_changes(handle: *mut CoreHandle) -> *mut c_cha
             let empty: Vec<PendingChange> = Vec::new();
             to_json_cstring(&empty)
         }
+    }
+}
+
+/// Set git authentication info (PAT token + remote URL).
+/// If no git repo exists at source_root, automatically initializes one.
+/// Also sets the remote URL on the repository if provided.
+/// Returns 1 on success, 0 on failure.
+#[no_mangle]
+pub extern "C" fn asm_set_git_auth(
+    handle: *mut CoreHandle,
+    token: *const c_char,
+    remote_url: *const c_char,
+) -> u8 {
+    if handle.is_null() {
+        return 0;
+    }
+    let h = unsafe { &mut *handle };
+
+    let token_str = from_cstring(token);
+    let url_str = from_cstring(remote_url);
+
+    if token_str.is_empty() {
+        return 0;
+    }
+
+    // Auto-init git repo if it doesn't exist yet
+    if h.git.is_none() {
+        let source_root = h.scanner.source_root();
+        match GitEngine::open_or_init(&source_root) {
+            Ok(engine) => h.git = Some(engine),
+            Err(e) => {
+                eprintln!("asm_set_git_auth: failed to init git repo: {}", e);
+                return 0;
+            }
+        }
+    }
+
+    // Set remote URL on repo
+    if let Some(git) = &h.git {
+        if !url_str.is_empty() {
+            if let Err(e) = git.set_remote_url(&url_str) {
+                eprintln!("asm_set_git_auth: failed to set remote URL: {}", e);
+                return 0;
+            }
+        }
+    }
+
+    h.git_auth = Some(crate::models::GitAuthInfo {
+        token: token_str,
+        remote_url: url_str,
+    });
+
+    1
+}
+
+/// Pull (fetch + rebase) from origin using stored auth.
+/// Returns JSON of GitStatusInfo.
+#[no_mangle]
+pub extern "C" fn asm_pull(handle: *mut CoreHandle) -> *mut c_char {
+    if handle.is_null() {
+        return std::ptr::null_mut();
+    }
+    let h = unsafe { &mut *handle };
+
+    match &mut h.git {
+        Some(git) => {
+            let token = h.git_auth.as_ref().map(|a| a.token.as_str());
+            match git.pull(token) {
+                Ok(status) => to_json_cstring(&status),
+                Err(e) => to_json_cstring(&GitStatusInfo::error(&e)),
+            }
+        }
+        None => to_json_cstring(&GitStatusInfo::error("No git repository configured")),
+    }
+}
+
+/// Set the git remote URL for "origin".
+/// Returns 1 on success, 0 on failure.
+#[no_mangle]
+pub extern "C" fn asm_set_remote_url(handle: *mut CoreHandle, url: *const c_char) -> u8 {
+    if handle.is_null() {
+        return 0;
+    }
+    let h = unsafe { &*handle };
+    let url_str = from_cstring(url);
+
+    match &h.git {
+        Some(git) => match git.set_remote_url(&url_str) {
+            Ok(()) => 1,
+            Err(e) => {
+                eprintln!("asm_set_remote_url: {}", e);
+                0
+            }
+        },
+        None => 0,
     }
 }
 
