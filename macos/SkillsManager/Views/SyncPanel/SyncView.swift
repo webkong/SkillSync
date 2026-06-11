@@ -49,6 +49,7 @@ struct SyncView: View {
     @AppStorage("syncTokenSaved_gitlab") private var tokenSavedGitlab = false
     @AppStorage("syncTokenSaved_other") private var tokenSavedOther = false
     @State private var showAuthSheet = false
+    @State private var isCheckingConnectivity = false
 
     private var provider: GitProvider {
         GitProvider(rawValue: providerRaw) ?? .github
@@ -62,12 +63,19 @@ struct SyncView: View {
         }
     }
 
-    /// Compose repo URL placeholder based on provider
     private var repoPlaceholder: String {
         if provider == .other {
             return "https://git.example.com/user/skills-repo"
         }
         return "https://\(provider.host)/user/skills-repo"
+    }
+
+    private var isConnected: Bool {
+        appState.gitConnectivity?.status == "connected"
+    }
+
+    private var isDisconnected: Bool {
+        appState.gitConnectivity?.status == "disconnected"
     }
 
     var body: some View {
@@ -76,11 +84,12 @@ struct SyncView: View {
                 Text("Sync")
                     .font(.headline)
                 Spacer()
+                connectivityDot
                 Button {
                     showAuthSheet = true
                 } label: {
                     HStack(spacing: 4) {
-                        Image(systemName: provider.icon)
+                        Image(systemName: "gearshape")
                         Text(tokenSaved ? provider.rawValue : "Authorize")
                     }
                     .font(.caption)
@@ -92,7 +101,7 @@ struct SyncView: View {
                 .buttonStyle(.plain)
                 .quickHelp("Configure git provider and authorization")
                 Button {
-                    appState.refreshGitStatus()
+                    checkConnectivity()
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
@@ -105,7 +114,6 @@ struct SyncView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // MARK: - Repository Config
                     GroupBox {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Repository")
@@ -122,7 +130,6 @@ struct SyncView: View {
                         .padding(12)
                     }
 
-                    // MARK: - Status card
                     GroupBox {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
@@ -141,7 +148,6 @@ struct SyncView: View {
                         .padding(8)
                     }
 
-                    // Pending changes
                     if !appState.pendingChanges.isEmpty {
                         GroupBox("Pending Changes") {
                             VStack(alignment: .leading, spacing: 4) {
@@ -166,9 +172,9 @@ struct SyncView: View {
                         }
                     }
 
-                    // MARK: - Pull & Push buttons
                     HStack(spacing: 12) {
                         Button {
+                            checkConnectivity()
                             appState.pullChanges()
                         } label: {
                             Label("Pull", systemImage: "arrow.down.circle.fill")
@@ -179,6 +185,7 @@ struct SyncView: View {
                         .disabled(repoURL.isEmpty || !tokenSaved)
 
                         Button {
+                            checkConnectivity()
                             appState.pushChanges()
                         } label: {
                             Label("Push", systemImage: "arrow.up.circle.fill")
@@ -194,6 +201,49 @@ struct SyncView: View {
         }
         .sheet(isPresented: $showAuthSheet) {
             AuthSheet(provider: $providerRaw)
+        }
+
+    }
+
+    @ViewBuilder
+    private var connectivityDot: some View {
+        if isCheckingConnectivity {
+            HStack(spacing: 4) {
+                ProgressView()
+                    .scaleEffect(0.7)
+                Text("Checking…")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.trailing, 4)
+        } else if isConnected {
+            HStack(spacing: 4) {
+                Image(systemName: "circle.fill")
+                    .font(.system(size: 7))
+                    .foregroundStyle(.green)
+                Text("Connected")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.trailing, 4)
+        } else if isDisconnected {
+            HStack(spacing: 4) {
+                Image(systemName: "circle.fill")
+                    .font(.system(size: 7))
+                    .foregroundStyle(.red)
+                Text("Disconnected")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.trailing, 4)
+        }
+    }
+
+    private func checkConnectivity() {
+        isCheckingConnectivity = true
+        appState.checkGitConnectivity()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            isCheckingConnectivity = false
         }
     }
 
@@ -240,6 +290,8 @@ struct SyncView: View {
 
 struct AuthSheet: View {
     @Binding var provider: String
+    var onSave: (() -> Void)?
+
     @AppStorage("syncToken_github") private var tokenGithub = ""
     @AppStorage("syncToken_gitlab") private var tokenGitlab = ""
     @AppStorage("syncToken_other") private var tokenOther = ""
@@ -248,6 +300,7 @@ struct AuthSheet: View {
     @AppStorage("syncTokenSaved_other") private var tokenSavedOther = false
     @AppStorage("syncCustomHost") private var customHost = ""
     @Environment(\.dismiss) private var dismiss
+    @State private var showTokenHelp = false
 
     private var currentProvider: GitProvider {
         GitProvider(rawValue: provider) ?? .github
@@ -261,13 +314,62 @@ struct AuthSheet: View {
         }
     }
 
+    @ViewBuilder
+    private var tokenHelpContent: some View {
+        switch currentProvider {
+        case .github:
+            VStack(alignment: .leading, spacing: 10) {
+                Text("How to create a GitHub Token")
+                    .font(.headline)
+                VStack(alignment: .leading, spacing: 6) {
+                    HelpStep("1", "Go to github.com/settings/tokens")
+                    HelpStep("2", "Click Generate new token \u{2192} Classic")
+                    HelpStep("3", "Select scope: repo (full control)")
+                    HelpStep("4", "Copy the token and paste it here")
+                }
+                Divider()
+                Text("For private repos, the token must have repo scope.\nFor organization repos, enable SSO for the token.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(16)
+            .frame(width: 280)
+        case .gitlab:
+            VStack(alignment: .leading, spacing: 10) {
+                Text("How to create a GitLab Token")
+                    .font(.headline)
+                VStack(alignment: .leading, spacing: 6) {
+                    HelpStep("1", "Go to gitlab.com/-/user_settings/personal_access_tokens")
+                    HelpStep("2", "Give it a name and expiration date")
+                    HelpStep("3", "Select scopes: read_repository, write_repository")
+                    HelpStep("4", "Copy the token and paste it here")
+                }
+            }
+            .padding(16)
+            .frame(width: 280)
+        case .other:
+            VStack(alignment: .leading, spacing: 10) {
+                Text("How to create a Token")
+                    .font(.headline)
+                VStack(alignment: .leading, spacing: 6) {
+                    HelpStep("1", "Log in to your self-hosted Git server")
+                    HelpStep("2", "Go to Settings \u{2192} Access Tokens")
+                    HelpStep("3", "Create a token with api/repo access")
+                    HelpStep("4", "Copy the token and paste it here")
+                }
+            }
+            .padding(16)
+            .frame(width: 280)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Authorization")
                 .font(.title2)
                 .fontWeight(.bold)
 
-            // Provider picker
             VStack(alignment: .leading, spacing: 8) {
                 Text("Git Provider")
                     .font(.subheadline)
@@ -281,7 +383,6 @@ struct AuthSheet: View {
                 .pickerStyle(.segmented)
             }
 
-            // Custom host for "Other" provider
             if currentProvider == .other {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Git Server Host")
@@ -293,11 +394,23 @@ struct AuthSheet: View {
                 }
             }
 
-            // Token input — separate SecureField per provider
             VStack(alignment: .leading, spacing: 8) {
-                Text("\(currentProvider.rawValue) Personal Access Token")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                HStack(spacing: 6) {
+                    Text("\(currentProvider.rawValue) Personal Access Token")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Button {
+                        showTokenHelp = true
+                    } label: {
+                        Image(systemName: "questionmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .popover(isPresented: $showTokenHelp) {
+                        tokenHelpContent
+                    }
+                }
 
                 switch currentProvider {
                 case .github:
@@ -359,12 +472,14 @@ struct AuthSheet: View {
                 Button(tokenSaved ? "Update" : "Save") {
                     switch currentProvider {
                     case .github:
-                        if !tokenGithub.isEmpty { tokenSavedGithub = true; dismiss() }
+                        if !tokenGithub.isEmpty { tokenSavedGithub = true }
                     case .gitlab:
-                        if !tokenGitlab.isEmpty { tokenSavedGitlab = true; dismiss() }
+                        if !tokenGitlab.isEmpty { tokenSavedGitlab = true }
                     case .other:
-                        if !tokenOther.isEmpty { tokenSavedOther = true; dismiss() }
+                        if !tokenOther.isEmpty { tokenSavedOther = true }
                     }
+                    onSave?()
+                    dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
                 .buttonStyle(.borderedProminent)
@@ -376,5 +491,31 @@ struct AuthSheet: View {
         }
         .padding(24)
         .frame(width: 420, height: currentProvider == .other ? 380 : 320)
+    }
+}
+
+// MARK: - Token Help
+
+struct HelpStep: View {
+    let number: String
+    let text: String
+
+    init(_ number: String, _ text: String) {
+        self.number = number
+        self.text = text
+    }
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(number)
+                .font(.caption2)
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
+                .frame(width: 18, height: 18)
+                .background(Circle().fill(Color.accentColor))
+            Text(text)
+                .font(.caption)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 }

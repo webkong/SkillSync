@@ -70,12 +70,13 @@ SwiftUI (macOS) → AppState → CoreBridge (serial DispatchQueue)
 ## Build & Test
 
 ```bash
-# Rust
+# Rust (always run after any Rust change)
 cd skills-core && cargo build --target aarch64-apple-darwin
-cd skills-core && cargo test    # ~28 unit tests
+cd skills-core && cargo test    # ~29 unit tests
 
-# macOS app
-xcodebuild -project SkillsManager.xcodeproj -scheme SkillsManager -configuration Release \
+# macOS app (always run after any code change to produce a testable .app)
+# Builds Rust → Swift → produces SkillsManager.app in DerivedData/Build/Products/Debug/
+xcodebuild -project SkillsManager.xcodeproj -scheme SkillsManager -configuration Debug \
   -derivedDataPath DerivedData build
 
 # Release packaging
@@ -85,6 +86,16 @@ scripts/release.sh build-all
 # Code signing
 scripts/self_signed_codesign.sh
 ```
+
+## Workflow
+
+**每次代码修改后，必须编译出一个可测试的 .app**。顺序如下：
+
+1. **Rust 层修改** → `cargo build --target aarch64-apple-darwin` + `cargo test`
+2. **Swift 层修改**（或全部修改） → `xcodebuild ... build`
+3. 产出位于 `DerivedData/Build/Products/Debug/SkillsManager.app`
+
+如果 Rust 代码未改动，可跳过 `cargo build` 直接跑 `xcodebuild`（Xcode 构建阶段会自动编译 Rust）。
 
 ## Rust Dependencies
 

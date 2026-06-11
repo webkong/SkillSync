@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use crate::agent_registry::AgentRegistry;
 use crate::git_engine::GitEngine;
-use crate::models::{CustomAgentInput, GitStatusInfo, PendingChange, WatcherEvent};
+use crate::models::{CustomAgentInput, GitConnectivity, GitStatusInfo, PendingChange, WatcherEvent};
 use crate::scanner::Scanner;
 use crate::storage::db::Database;
 use crate::symlink::SymlinkManager;
@@ -487,6 +487,36 @@ pub extern "C" fn asm_pull(handle: *mut CoreHandle) -> *mut c_char {
             }
         }
         None => to_json_cstring(&GitStatusInfo::error("No git repository configured")),
+    }
+}
+
+/// Check if the git remote is reachable with the current auth token.
+/// Returns JSON of GitConnectivity: {"status":"connected"/"disconnected", "message":...}
+#[no_mangle]
+pub extern "C" fn asm_check_git_connectivity(handle: *mut CoreHandle) -> *mut c_char {
+    if handle.is_null() {
+        return to_json_cstring(&GitConnectivity {
+            status: "disconnected".into(),
+            message: Some("Core not initialized".into()),
+        });
+    }
+    let h = unsafe { &*handle };
+
+    match &h.git {
+        Some(git) => {
+            let token = h.git_auth.as_ref().map(|a| a.token.as_str());
+            match git.check_connectivity(token) {
+                Ok(conn) => to_json_cstring(&conn),
+                Err(e) => to_json_cstring(&GitConnectivity {
+                    status: "disconnected".into(),
+                    message: Some(e),
+                }),
+            }
+        }
+        None => to_json_cstring(&GitConnectivity {
+            status: "disconnected".into(),
+            message: Some("No git repository".into()),
+        }),
     }
 }
 

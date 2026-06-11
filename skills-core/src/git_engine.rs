@@ -1,8 +1,28 @@
+use std::io::Write;
 use std::path::Path;
 
 use git2::{Cred, RemoteCallbacks, Repository, Status, StatusOptions};
 
-use crate::models::{GitStatusInfo, PendingChange};
+use crate::models::{GitConnectivity, GitStatusInfo, PendingChange};
+
+/// Write debug log to /tmp/asm-git.log and stderr
+pub fn debug_log(msg: &str) {
+    eprintln!("[asm] {}", msg);
+    if let Ok(mut f) = std::fs::OpenOptions::new()
+        .create(true).append(true).open("/tmp/asm-git.log")
+    {
+        let _ = writeln!(f, "[asm] {}", msg);
+    }
+}
+
+/// Macro version to use with format args
+#[macro_export]
+macro_rules! debug_log {
+    ($($arg:tt)*) => {{
+        let msg = format!($($arg)*);
+        $crate::git_engine::debug_log(&msg);
+    }};
+}
 
 pub struct GitEngine {
     repo: Repository,
@@ -175,11 +195,13 @@ impl GitEngine {
             .map_err(|e| format!("Failed to get HEAD: {}", e))?;
         let name = head.shorthand()
             .ok_or("HEAD is not on a branch")?;
+        debug_log!(" current_branch: {}", name);
         Ok(name.to_string())
     }
 
     /// Fetch from origin using the given token for auth (or no auth if None).
     fn fetch_origin(&self, branch: &str, token: Option<&str>) -> Result<(), String> {
+        debug_log!(" fetch_origin: branch={}, has_token={}", branch, token.is_some());
         let mut remote = self.repo.find_remote("origin")
             .map_err(|e| format!("Failed to find remote 'origin': {}", e))?;
 
@@ -191,36 +213,105 @@ impl GitEngine {
         remote.fetch(&[branch], Some(&mut fetch_options), None)
             .map_err(|e| format!("Failed to fetch from origin: {}", e))?;
 
+        debug_log!(" fetch_origin: completed");
         Ok(())
     }
 
-    /// Check if working directory has local changes (unstaged or untracked).
-    fn has_local_changes(&self) -> Result<bool, String> {
-        let statuses = self.repo.statuses(Some(
-            StatusOptions::new().include_untracked(true),
-        ))
-        .map_err(|e| format!("Failed to check status: {}", e))?;
-        Ok(statuses.iter().any(|s| !s.status().is_empty()))
+    /// Auto-commit any pending changes before sync operations.
+    /// Handles both initial commit (unborn HEAD) and subsequent commits.
+    fn auto_commit(&mut self) -> Result<(), String> {
+        debug_log!(" auto_commit: checking pending changes");
+        let changes = self.get_pending_changes()?;
+        if changes.is_empty() {
+            debug_log!(" auto_commit: no pending changes, skipping");
+            return Ok(());
+        }
+
+        debug_log!(" auto_commit: {} pending changes", changes.len());
+        for c in &changes {
+            debug_log!(" auto_commit:   {} - {}", c.change_type, c.file_path);
+        }
+
+        let file_count = changes.len();
+
+        let mut index = self.repo.index()
+            .map_err(|e| format!("Failed to get index: {}", e))?;
+
+        index.add_all(["*"].iter(), git2::IndexAddOption::DEFAULT, None)
+            .map_err(|e| format!("Failed to stage files: {}", e))?;
+
+        index.write()
+            .map_err(|e| format!("Failed to write index: {}", e))?;
+
+        let tree_oid = index.write_tree()
+            .map_err(|e| format!("Failed to write tree: {}", e))?;
+        drop(index);
+
+        let tree = self.repo.find_tree(tree_oid)
+            .map_err(|e| format!("Failed to find tree: {}", e))?;
+
+        let sig = self.repo.signature()
+            .map_err(|e| format!("Failed to get signature: {}", e))?;
+
+        let message = format!("Auto-commit before sync ({} file{})", file_count, if file_count == 1 { "" } else { "s" });
+
+        match self.repo.head() {
+            Ok(head) => {
+                let parent_oid = head.target().ok_or("HEAD has no target")?;
+                drop(head);
+                let parent = self.repo.find_commit(parent_oid)
+                    .map_err(|e| format!("Failed to find parent commit: {}", e))?;
+                self.repo.commit(
+                    Some("HEAD"),
+                    &sig,
+                    &sig,
+                    &message,
+                    &tree,
+                    &[&parent],
+                )
+                .map_err(|e| format!("Failed to auto-commit: {}", e))?;
+                debug_log!(" auto_commit: committed (parent) \"{}\"", message);
+            }
+            Err(_) => {
+                // Unborn HEAD: initial commit with no parents
+                self.repo.commit(
+                    Some("HEAD"),
+                    &sig,
+                    &sig,
+                    &message,
+                    &tree,
+                    &[] as &[&git2::Commit],
+                )
+                .map_err(|e| format!("Failed to create initial auto-commit: {}", e))?;
+                debug_log!(" auto_commit: committed (initial) \"{}\"", message);
+            }
+        }
+
+        Ok(())
     }
 
-    /// Pull (fetch + rebase) from origin. Does NOT stage, commit, or push.
+    /// Pull (fetch + rebase) from origin. Auto-commits pending changes first.
     pub fn pull(&mut self, token: Option<&str>) -> Result<GitStatusInfo, String> {
+        debug_log!(" pull: start");
+        self.auto_commit()?;
         let branch = self.current_branch()?;
-
-        // Stash any local changes before pulling
-        let need_stash = self.has_local_changes()?;
-
-        if need_stash {
-            let sig = self.repo.signature()
-                .map_err(|e| format!("Failed to get signature: {}", e))?;
-            self.repo.stash_save(&sig, "auto-stash before pull", None::<git2::StashFlags>)
-                .map_err(|e| format!("Failed to stash: {}", e))?;
-        }
 
         // Fetch
         self.fetch_origin(&branch, token)?;
 
-        // Rebase onto FETCH_HEAD — scoped to release all borrows before stash_pop
+        // Check FETCH_HEAD validity before rebase
+        let fetch_head_path = self.repo.path().join("FETCH_HEAD");
+        let fetch_ok = fetch_head_path.exists()
+            && std::fs::metadata(&fetch_head_path).map(|m| m.len() > 0).unwrap_or(false);
+
+        if !fetch_ok {
+            debug_log!(" pull: FETCH_HEAD missing or empty, nothing to rebase");
+            return Ok(GitStatusInfo::synced());
+        }
+
+        debug_log!(" pull: FETCH_HEAD found, starting rebase");
+
+        // Rebase onto FETCH_HEAD
         {
             let fetch_head = self.repo.find_reference("FETCH_HEAD")
                 .map_err(|e| format!("Failed to find FETCH_HEAD: {}", e))?;
@@ -242,80 +333,34 @@ impl GitEngine {
             while let Some(op) = rebase.next() {
                 op.map_err(|e| format!("Rebase step failed: {}", e))?;
                 if rebase.commit(None, &sig, None).is_err() {
-                    // Nothing to commit for this step, skip
+                    // Nothing to commit, skip
                 }
             }
 
             rebase.finish(None)
                 .map_err(|e| format!("Failed to finish rebase: {}", e))?;
         }
-        // All borrows released here
 
-        // Pop stash if we stashed
-        if need_stash {
-            let _ = self.repo.stash_pop(0, None);
-        }
-
+        debug_log!(" pull: done");
         Ok(GitStatusInfo::synced())
     }
 
-    /// Stage all changes, commit with message, and push.
-    pub fn stage_and_push(&mut self, message: &str, token: Option<&str>) -> Result<GitStatusInfo, String> {
-        // Step 1: Stage all changes
-        let mut index = self.repo.index()
-            .map_err(|e| format!("Failed to get index: {}", e))?;
+    /// Auto-commit pending changes, pull-rebase, and push.
+    pub fn stage_and_push(&mut self, _message: &str, token: Option<&str>) -> Result<GitStatusInfo, String> {
+        debug_log!(" stage_and_push: start");
+        self.auto_commit()?;
 
-        index.add_all(["*"].iter(), git2::IndexAddOption::DEFAULT, None)
-            .map_err(|e| format!("Failed to stage files: {}", e))?;
-
-        index.write()
-            .map_err(|e| format!("Failed to write index: {}", e))?;
-
-        let tree_oid = index.write_tree()
-            .map_err(|e| format!("Failed to write tree: {}", e))?;
-
-        // Drop index before subsequent repo operations
-        drop(index);
-
-        let tree = self.repo.find_tree(tree_oid)
-            .map_err(|e| format!("Failed to find tree: {}", e))?;
-
-        // Step 2: Create commit
-        let signature = self.repo.signature()
-            .map_err(|e| format!("Failed to get signature: {}", e))?;
-
-        let head = self.repo.head()
-            .map_err(|e| format!("Failed to get HEAD: {}", e))?;
-        let parent_oid = head.target().ok_or("HEAD has no target")?;
-        drop(head);
-
-        let parent = self.repo.find_commit(parent_oid)
-            .map_err(|e| format!("Failed to find parent commit: {}", e))?;
-
-        self.repo.commit(
-            Some("HEAD"),
-            &signature,
-            &signature,
-            message,
-            &tree,
-            &[&parent],
-        )
-        .map_err(|e| format!("Failed to commit: {}", e))?;
-
-        // Drop tree and parent before pull_rebase needs &mut self
-        drop(tree);
-        drop(parent);
-
-        // Step 3: Pull --rebase (if there's a remote)
         if self.has_remote() {
+            debug_log!(" stage_and_push: has remote, starting pull_rebase");
             if let Err(e) = self.pull_rebase(token) {
+                debug_log!(" stage_and_push: pull_rebase failed: {}", e);
                 return Ok(GitStatusInfo::error(&format!("Pull rebase failed: {}", e)));
             }
-        }
-
-        // Step 4: Push
-        if self.has_remote() {
+            debug_log!(" stage_and_push: pull_rebase ok, starting push");
             self.push(token)?;
+            debug_log!(" stage_and_push: push ok");
+        } else {
+            debug_log!(" stage_and_push: no remote configured");
         }
 
         Ok(GitStatusInfo::synced())
@@ -328,12 +373,48 @@ impl GitEngine {
 
     /// Execute git pull --rebase (fetch + rebase).
     fn pull_rebase(&mut self, token: Option<&str>) -> Result<(), String> {
-        let branch = self.current_branch()?;
+        debug_log!(" pull_rebase: start");
+
+        let branch = match self.current_branch() {
+            Ok(b) => b,
+            Err(_) => {
+                debug_log!(" pull_rebase: HEAD is unborn, skipping");
+                return Ok(());
+            }
+        };
+
+        // Clean up stale empty FETCH_HEAD from previous failed attempts
+        let fetch_head_path = self.repo.path().join("FETCH_HEAD");
+        if fetch_head_path.exists() {
+            let len = std::fs::metadata(&fetch_head_path).map(|m| m.len()).unwrap_or(0);
+            debug_log!(" pull_rebase: existing FETCH_HEAD size={}", len);
+            if len == 0 {
+                debug_log!(" pull_rebase: removing stale empty FETCH_HEAD");
+                let _ = std::fs::remove_file(&fetch_head_path);
+            }
+        } else {
+            debug_log!(" pull_rebase: no existing FETCH_HEAD");
+        }
 
         // Fetch from origin
         self.fetch_origin(&branch, token)?;
 
+        // Check if FETCH_HEAD has content (remote may be empty)
+        let is_empty = !fetch_head_path.exists()
+            || std::fs::metadata(&fetch_head_path)
+                .map(|m| m.len() == 0)
+                .unwrap_or(true);
+
+        debug_log!(" pull_rebase: FETCH_HEAD after fetch: exists={}, is_empty={}",
+            fetch_head_path.exists(), is_empty);
+
+        if is_empty {
+            debug_log!(" pull_rebase: nothing fetched, skipping rebase");
+            return Ok(());
+        }
+
         // Get the FETCH_HEAD
+        debug_log!(" pull_rebase: finding FETCH_HEAD reference");
         let fetch_head = self.repo.find_reference("FETCH_HEAD")
             .map_err(|e| format!("Failed to find FETCH_HEAD: {}", e))?;
         let upstream = self.repo.reference_to_annotated_commit(&fetch_head)
@@ -368,13 +449,61 @@ impl GitEngine {
         Ok(())
     }
 
+    /// Check connectivity to the remote repository using the provided token.
+    /// Connects to the remote and immediately disconnects — no data transfer.
+    pub fn check_connectivity(&self, token: Option<&str>) -> Result<GitConnectivity, String> {
+        let token = match token {
+            Some(t) if !t.is_empty() => t,
+            _ => return Ok(GitConnectivity {
+                status: "disconnected".into(),
+                message: Some("No token configured".into()),
+            }),
+        };
+
+        // Check if remote exists
+        if self.repo.find_remote("origin").is_err() {
+            return Ok(GitConnectivity {
+                status: "disconnected".into(),
+                message: Some("No remote 'origin' configured".into()),
+            });
+        }
+
+        let mut remote = self.repo.find_remote("origin")
+            .map_err(|e| format!("Failed to find remote 'origin': {}", e))?;
+
+        // Connect only — no data transfer, just auth handshake
+        // Use a block to scope the RemoteConnection's lifetime
+        let result = {
+            remote.connect_auth(git2::Direction::Fetch, Some(Self::make_remote_callbacks(token)), None)
+                .map(|_conn| ())
+                .map_err(|e| e.to_string())
+        };
+        match result {
+            Ok(()) => Ok(GitConnectivity { status: "connected".into(), message: None }),
+            Err(e) => {
+                let msg = if e.contains("403") {
+                    "Access denied (403). Check that your token has 'repo' scope and is not expired.".into()
+                } else if e.contains("401") {
+                    "Authentication failed (401). The token may be invalid or revoked.".into()
+                } else if e.contains("404") {
+                    "Repository not found (404). Check the repository URL.".into()
+                } else {
+                    format!("Connection failed: {}", e)
+                };
+                Ok(GitConnectivity { status: "disconnected".into(), message: Some(msg) })
+            }
+        }
+    }
+
     /// Push to origin.
     fn push(&self, token: Option<&str>) -> Result<(), String> {
+        debug_log!(" push: start, has_token={}", token.is_some());
         let mut remote = self.repo.find_remote("origin")
             .map_err(|e| format!("Failed to find remote 'origin': {}", e))?;
 
         let branch = self.current_branch().unwrap_or_else(|_| "main".to_string());
         let refspec = format!("refs/heads/{branch}:refs/heads/{branch}");
+        debug_log!(" push: branch={}, refspec={}", branch, refspec);
 
         let mut push_options = git2::PushOptions::new();
         if let Some(tok) = token {
@@ -384,6 +513,7 @@ impl GitEngine {
         remote.push(&[&refspec], Some(&mut push_options))
             .map_err(|e| format!("Failed to push: {}", e))?;
 
+        debug_log!(" push: completed");
         Ok(())
     }
 }
