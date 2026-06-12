@@ -247,7 +247,7 @@ function Navigation({ t, onToggleLanguage }) {
     <header className="nav-wrap">
       <nav className="nav">
         <a className="brand" href="/" aria-label={t.brandHome}>
-          <img src="/skillsync-logo.svg" alt="" />
+          <img src="/skillsync-logo.png" alt="" />
           <span>SkillSync</span>
         </a>
         <div className="nav-links">
@@ -449,7 +449,7 @@ function Footer({ t }) {
     <footer className="footer">
       <div className="footer-main">
         <div className="brand footer-brand">
-          <img src="/skillsync-logo.svg" alt="" />
+          <img src="/skillsync-logo.png" alt="" />
           <span>SkillSync</span>
         </div>
         <div className="footer-links">

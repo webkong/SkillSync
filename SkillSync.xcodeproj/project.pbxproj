@@ -25,6 +25,7 @@
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
 		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
 		B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */; };
+		AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* Assets.xcassets */; };
 
 		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
 		LOGO0001BF /* claude-code.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0001FR /* claude-code.svg */; };
@@ -79,6 +80,7 @@
 		F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePromptView.swift; sourceTree = "<group>"; };
 		E991F806D9CEFF3F7B30338C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillSync.entitlements; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B9693C1AD3E74080D3204EE9 /* SkillSync-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillSync-Bridging-Header.h; sourceTree = "<group>"; };
 		C2D27BB31EBC6B5686590172 /* SkillSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 
@@ -197,6 +199,7 @@
 		99C0C7812AA0328845BC85EF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AA11BB22CC33DD44EE55FF67 /* Resources/Assets.xcassets */,
 				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
 				4637E3EAAF19BEB63873D5A6 /* Resources/SkillSync.entitlements */,
 				LOGOGRP /* brand-logos */,
@@ -334,6 +337,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */,
 				26870478A43345430FE7EE4C /* Info.plist in Resources */,
 				B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */,
 				LOGO0000BF /* antigravity.svg in Resources */,
@@ -551,6 +555,7 @@
 		FAC52C1C391B14FB874D86B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = macos/SkillSync/Resources/SkillSync.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -582,6 +587,7 @@
 	9A4DF478F372EEEC0888CC04 /* Release */ = {
 		isa = XCBuildConfiguration;
 		buildSettings = {
+			ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 			CODE_SIGN_ENTITLEMENTS = macos/SkillSync/Resources/SkillSync.entitlements;
 			CODE_SIGN_STYLE = Automatic;
 			COMBINE_HIDPI_IMAGES = YES;
