@@ -1,4 +1,17 @@
-# Xcode
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# --- Xcode ---
 DerivedData/
 *.xcworkspace
 *.pbxuser
@@ -10,9 +23,40 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+*.xcuserstate
+*.xcbkptlist
+*.xcscmblueprint
+*.xcscheme
+!*.xcscheme
+*~
 
-# Rust
+# --- Rust ---
 skills-core/target/
+skills-core/Cargo.lock
 
-# macOS
+# --- Node / Website ---
+website/node_modules/
+website/dist/
+website/.vite/
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Env ---
+.env
+.env.local
+.env.*.local
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- General ---
 .DS_Store
+Thumbs.db
+*.tmp
+*.bak

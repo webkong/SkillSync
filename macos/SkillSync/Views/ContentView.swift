@@ -10,19 +10,15 @@ struct ContentView: View {
             sidebar
                 .navigationSplitViewColumnWidth(min: 160, ideal: 180, max: 220)
         } detail: {
-            HStack(spacing: 0) {
-                // Content area fills the main space
-                contentArea
-                    .frame(maxWidth: .infinity)
-
-                // Detail panel on the right, not overlapping
-                if isDetailVisible {
+            contentArea
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .trailing) {
                     detailArea
                         .frame(width: 280)
                         .background(.background)
                         .shadow(color: .black.opacity(0.06), radius: 4, x: -2)
+                        .offset(x: isDetailVisible ? 0 : 300)
                 }
-            }
         }
         .sheet(item: $appState.pendingNewSkill) { skill in
             NewSkillSheet(skill: skill) { agentIds in
