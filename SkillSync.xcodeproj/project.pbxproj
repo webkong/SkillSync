@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		76E743EE56417375AE73C212 /* SkillsManagerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CB23447536FAF8D597A0BA /* SkillsManagerApp.swift */; };
+		76E743EE56417375AE73C212 /* SkillSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CB23447536FAF8D597A0BA /* SkillSyncApp.swift */; };
 		F2790DF64E3CAA2F2720C3DA /* CoreBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8E70EAFAB5AE9DF68D1C27 /* CoreBridge.swift */; };
 		A514659500A73E416CA06D75 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7206A2ADB1591D4E60E8073A /* AppState.swift */; };
 		70DF6AF64E7C5E11BC307B89 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11CBAC0AEA1DE148C9A5144 /* DataModels.swift */; };
@@ -24,7 +24,7 @@
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
 		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
-		B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */; };
+		B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */; };
 
 		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
 		LOGO0001BF /* claude-code.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0001FR /* claude-code.svg */; };
@@ -86,7 +86,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		79CB23447536FAF8D597A0BA /* SkillsManagerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsManagerApp.swift; sourceTree = "<group>"; };
+		79CB23447536FAF8D597A0BA /* SkillSyncApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillSyncApp.swift; sourceTree = "<group>"; };
 		7A8E70EAFAB5AE9DF68D1C27 /* CoreBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreBridge.swift; sourceTree = "<group>"; };
 		7206A2ADB1591D4E60E8073A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		D11CBAC0AEA1DE148C9A5144 /* DataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
@@ -103,9 +103,9 @@
 		644054408F44F0E400F2278C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePromptView.swift; sourceTree = "<group>"; };
 		E991F806D9CEFF3F7B30338C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		4637E3EAAF19BEB63873D5A6 /* SkillsManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillsManager.entitlements; sourceTree = "<group>"; };
-		B9693C1AD3E74080D3204EE9 /* SkillsManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillsManager-Bridging-Header.h; sourceTree = "<group>"; };
-		C2D27BB31EBC6B5686590172 /* SkillsManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillsManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillSync.entitlements; sourceTree = "<group>"; };
+		B9693C1AD3E74080D3204EE9 /* SkillSync-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillSync-Bridging-Header.h; sourceTree = "<group>"; };
+		C2D27BB31EBC6B5686590172 /* SkillSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 
 		LOGO0000FR /* antigravity.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = antigravity.svg; sourceTree = "<group>"; };
 		LOGO0001FR /* claude-code.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = claude-code.svg; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 		C3AB3F68C1591CEF27AC6B90 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				79CB23447536FAF8D597A0BA /* App/SkillsManagerApp.swift */,
+				79CB23447536FAF8D597A0BA /* App/SkillSyncApp.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -179,7 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				7A8E70EAFAB5AE9DF68D1C27 /* Bridge/CoreBridge.swift */,
-				B9693C1AD3E74080D3204EE9 /* Bridge/SkillsManager-Bridging-Header.h */,
+				B9693C1AD3E74080D3204EE9 /* Bridge/SkillSync-Bridging-Header.h */,
 			);
 			path = Bridge;
 			sourceTree = "<group>";
@@ -248,14 +248,14 @@
 			isa = PBXGroup;
 			children = (
 				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
-				4637E3EAAF19BEB63873D5A6 /* Resources/SkillsManager.entitlements */,
+				4637E3EAAF19BEB63873D5A6 /* Resources/SkillSync.entitlements */,
 							LOGOGRP /* brand-logos */,
 				LOGOGRP /* brand-logos */,
 );
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		F58DF55018674E35E89E759C /* SkillsManager */ = {
+		F58DF55018674E35E89E759C /* SkillSync */ = {
 			isa = PBXGroup;
 			children = (
 				C3AB3F68C1591CEF27AC6B90 /* Group/App */,
@@ -264,13 +264,13 @@
 				9A89640EA1DD26093EC52632 /* Group/Views */,
 				99C0C7812AA0328845BC85EF /* Group/Resources */,
 			);
-			path = "macos/SkillsManager";
+			path = "macos/SkillSync";
 			sourceTree = "<group>";
 		};
 		6D159F361021D92BC3E10E55 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C2D27BB31EBC6B5686590172 /* SkillsManager.app */,
+				C2D27BB31EBC6B5686590172 /* SkillSync.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -278,7 +278,7 @@
 		5C999E731352905727541C3C = {
 			isa = PBXGroup;
 			children = (
-				F58DF55018674E35E89E759C /* SkillsManager */,
+				F58DF55018674E35E89E759C /* SkillSync */,
 				6D159F361021D92BC3E10E55 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -358,9 +358,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C795AA2738071F015DE00151 /* SkillsManager */ = {
+		C795AA2738071F015DE00151 /* SkillSync */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillsManager" */;
+			buildConfigurationList = BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillSync" */;
 			buildPhases = (
 				C19E61334BFBC559F37D14E2 /* Build Rust Core */,
 				DE6EE531638FBF802B9F50F8 /* Sources */,
@@ -370,11 +370,11 @@
 			);
 			dependencies = (
 			);
-			name = SkillsManager;
+			name = SkillSync;
 			packageProductDependencies = (
 			);
-			productName = SkillsManager;
-			productReference = C2D27BB31EBC6B5686590172 /* SkillsManager.app */;
+			productName = SkillSync;
+			productReference = C2D27BB31EBC6B5686590172 /* SkillSync.app */;
 			productType = "com.apple.product-type.application";
 		};
 
@@ -392,7 +392,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillsManager" */;
+			buildConfigurationList = 344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillSync" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -406,7 +406,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C795AA2738071F015DE00151 /* SkillsManager */,
+				C795AA2738071F015DE00151 /* SkillSync */,
 			);
 		};
 
@@ -418,7 +418,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26870478A43345430FE7EE4C /* Info.plist in Resources */,
-				B51029FD2E1B6727D8FEFE9B /* SkillsManager.entitlements in Resources */,
+				B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */,
 							LOGO0000BF /* antigravity.svg in Resources */,
 				LOGO0001BF /* claude-code.svg in Resources */,
 				LOGO0002BF /* codebuddy.svg in Resources */,
@@ -510,7 +510,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76E743EE56417375AE73C212 /* SkillsManagerApp.swift in Sources */,
+				76E743EE56417375AE73C212 /* SkillSyncApp.swift in Sources */,
 				F2790DF64E3CAA2F2720C3DA /* CoreBridge.swift in Sources */,
 				A514659500A73E416CA06D75 /* AppState.swift in Sources */,
 				70DF6AF64E7C5E11BC307B89 /* DataModels.swift in Sources */,
@@ -659,10 +659,10 @@
 		FAC52C1C391B14FB874D86B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macos/SkillSync/Resources/SkillSync.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
+				INFOPLIST_FILE = macos/SkillSync/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 				"$(inherited)",
 				"@executable_path/../Frameworks",
@@ -681,19 +681,19 @@
 				"-lssl",
 				"-lcrypto",
 				);
-			PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
+			PRODUCT_BUNDLE_IDENTIFIER = com.skillsync.app;
 			SDKROOT = macosx;
-			SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
+			SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillSync/Bridge/SkillSync-Bridging-Header.h";
 		};
 		name = Debug;
 	};
 	9A4DF478F372EEEC0888CC04 /* Release */ = {
 		isa = XCBuildConfiguration;
 		buildSettings = {
-			CODE_SIGN_ENTITLEMENTS = macos/SkillsManager/Resources/SkillsManager.entitlements;
+			CODE_SIGN_ENTITLEMENTS = macos/SkillSync/Resources/SkillSync.entitlements;
 			CODE_SIGN_STYLE = Automatic;
 			COMBINE_HIDPI_IMAGES = YES;
-			INFOPLIST_FILE = macos/SkillsManager/Resources/Info.plist;
+			INFOPLIST_FILE = macos/SkillSync/Resources/Info.plist;
 			LD_RUNPATH_SEARCH_PATHS = (
 				"$(inherited)",
 				"@executable_path/../Frameworks",
@@ -712,9 +712,9 @@
 				"-lssl",
 				"-lcrypto",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.skills-manager.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skillsync.app;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillsManager/Bridge/SkillsManager-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillSync/Bridge/SkillSync-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -722,7 +722,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillsManager" */ = {
+		344629A1E4F899A26953FBED /* Build configuration list for PBXProject "SkillSync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13A9DFF8F6856CAC9C210911 /* Debug */,
@@ -731,7 +731,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillsManager" */ = {
+		BCBA909DEA747C22C71114CD /* Build configuration list for PBXNativeTarget "SkillSync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FAC52C1C391B14FB874D86B4 /* Debug */,

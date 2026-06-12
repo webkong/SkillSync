@@ -1,4 +1,4 @@
-# Agent Skills Manager
+# SkillSync
 
 macOS native application for unified management of AI Coding Agent skills/prompts. Centralizes skill files from `~/.agent/skills` and distributes them to multiple AI coding agents (Claude Code, Cursor, Windsurf, Copilot, Zed, etc.) via symlinks.
 
@@ -14,8 +14,8 @@ macOS native application for unified management of AI Coding Agent skills/prompt
 ## Project Structure
 
 ```
-AgentSkillsManager/
-├── macos/SkillsManager/           # SwiftUI macOS application
+SkillSync/
+├── macos/SkillSync/           # SwiftUI macOS application
 │   ├── App/                       # App entry point, lifecycle
 │   ├── Bridge/                    # C FFI bridge (CoreBridge.swift + bridging header)
 │   ├── Models/                    # AppState (ObservableObject), DataModels (Codable)
@@ -75,8 +75,8 @@ cd skills-core && cargo build --target aarch64-apple-darwin
 cd skills-core && cargo test    # ~29 unit tests
 
 # macOS app (always run after any code change to produce a testable .app)
-# Builds Rust → Swift → produces SkillsManager.app in DerivedData/Build/Products/Debug/
-xcodebuild -project SkillsManager.xcodeproj -scheme SkillsManager -configuration Debug \
+# Builds Rust → Swift → produces SkillSync.app in DerivedData/Build/Products/Debug/
+xcodebuild -project SkillSync.xcodeproj -scheme SkillSync -configuration Debug \
   -derivedDataPath DerivedData build
 
 # Release packaging
@@ -93,7 +93,7 @@ scripts/self_signed_codesign.sh
 
 1. **Rust 层修改** → `cargo build --target aarch64-apple-darwin` + `cargo test`
 2. **Swift 层修改**（或全部修改） → `xcodebuild ... build`
-3. 产出位于 `DerivedData/Build/Products/Debug/SkillsManager.app`
+3. 产出位于 `DerivedData/Build/Products/Debug/SkillSync.app`
 
 如果 Rust 代码未改动，可跳过 `cargo build` 直接跑 `xcodebuild`（Xcode 构建阶段会自动编译 Rust）。
 
@@ -104,3 +104,9 @@ serde, serde_json, git2, notify (macos_kqueue), walkdir, dirs, uuid, chrono, rus
 ## Swift Frameworks
 
 SwiftUI, AppKit/Foundation, Security, libskills_core.a (via `-force_load`)
+
+## Rename History
+
+- **2026-06-11**: Renamed from `Agent Skills Manager` → `SkillSync`
+  - Bundle ID: `com.skills-manager.app` → `com.skillsync.app`
+  - GitHub: `webkong/AgentSkillsManager` → `webkong/SkillSync`

@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct SkillsManagerApp: App {
+struct SkillSyncApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var appState = AppState.shared
 

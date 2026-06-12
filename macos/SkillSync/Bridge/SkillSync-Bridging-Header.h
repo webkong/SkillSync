@@ -32,6 +32,7 @@ char* asm_get_pending_changes(void* handle);
 uint8_t asm_set_git_auth(void* handle, const char* token, const char* remote_url);
 char* asm_pull(void* handle);
 uint8_t asm_set_remote_url(void* handle, const char* url);
+char* asm_check_git_connectivity(void* handle);
 
 // File watcher
 uint8_t asm_start_watcher(void* handle);

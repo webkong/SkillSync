@@ -383,7 +383,7 @@ pub extern "C" fn asm_stage_and_push(handle: *mut CoreHandle) -> *mut c_char {
     match &mut h.git {
         Some(git) => {
             let token = h.git_auth.as_ref().map(|a| a.token.as_str());
-            match git.stage_and_push("skill: sync from Agent Skills Manager", token) {
+            match git.stage_and_push("skill: sync from SkillSync", token) {
                 Ok(status) => to_json_cstring(&status),
                 Err(e) => to_json_cstring(&GitStatusInfo::error(&e)),
             }

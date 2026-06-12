@@ -49,9 +49,9 @@ impl GitEngine {
         // Configure local user for commits
         let mut config = repo.config()
             .map_err(|e| format!("Failed to get repo config: {}", e))?;
-        config.set_str("user.name", "Agent Skills Manager")
+        config.set_str("user.name", "SkillSync")
             .map_err(|e| format!("Failed to set user.name: {}", e))?;
-        config.set_str("user.email", "asm@local")
+        config.set_str("user.email", "skillsync@local")
             .map_err(|e| format!("Failed to set user.email: {}", e))?;
         drop(config);
 

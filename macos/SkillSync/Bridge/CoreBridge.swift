@@ -4,7 +4,7 @@ final class CoreBridge: @unchecked Sendable {
     static let shared = CoreBridge()
 
     private var handle: UnsafeMutableRawPointer?
-    private let queue = DispatchQueue(label: "com.skills-manager.core")
+    private let queue = DispatchQueue(label: "com.skillsync.core")
 
     private init() {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -251,6 +251,16 @@ final class CoreBridge: @unchecked Sendable {
             defer { asm_free_string(ptr) }
             let json = String(cString: ptr)
             return try? JSONDecoder().decode(GitStatusInfo.self, from: Data(json.utf8))
+        }
+    }
+
+    func checkGitConnectivity() -> GitConnectivity? {
+        return queue.sync {
+            guard let h = handle,
+                  let ptr = asm_check_git_connectivity(h) else { return nil }
+            defer { asm_free_string(ptr) }
+            let json = String(cString: ptr)
+            return try? JSONDecoder().decode(GitConnectivity.self, from: Data(json.utf8))
         }
     }
 

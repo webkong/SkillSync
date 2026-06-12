@@ -17,6 +17,7 @@ final class AppState: ObservableObject {
     @Published var isFetching = false
     @Published var showOrganizeConfirm = false
     @Published var selectedSkill: OrganizedSkill? = nil
+    @Published var gitConnectivity: GitConnectivity? = nil
 
     // MARK: - Initialization
 
@@ -34,6 +35,8 @@ final class AppState: ObservableObject {
             gitStatus = status
         }
         pendingChanges = core.getPendingChanges()
+        applyGitAuth()
+        gitConnectivity = core.checkGitConnectivity()
 
         // Check for new skills
         let newSkills = core.detectNewSkills()
@@ -232,5 +235,11 @@ final class AppState: ObservableObject {
             gitStatus = status
         }
         pendingChanges = core.getPendingChanges()
+        checkGitConnectivity()
+    }
+
+    func checkGitConnectivity() {
+        applyGitAuth()
+        gitConnectivity = core.checkGitConnectivity()
     }
 }

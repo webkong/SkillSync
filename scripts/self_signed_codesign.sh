@@ -3,8 +3,8 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SIGNING_DIR="${SIGNING_DIR:-$ROOT_DIR/signing}"
-KEY_NAME="${SELF_SIGNED_KEY_NAME:-skills-manager-internal-codesign}"
-COMMON_NAME="${SELF_SIGNED_COMMON_NAME:-SkillsManager Internal Code Signing}"
+KEY_NAME="${SELF_SIGNED_KEY_NAME:-skillsync-internal-codesign}"
+COMMON_NAME="${SELF_SIGNED_COMMON_NAME:-SkillSync Internal Code Signing}"
 P12_PASSWORD="${SELF_SIGNED_P12_PASSWORD:-}"
 KEYCHAIN_PASSWORD="${SELF_SIGNED_KEYCHAIN_PASSWORD:-}"
 KEYCHAIN_DIR="${SELF_SIGNED_KEYCHAIN_DIR:-$HOME/Library/Keychains}"

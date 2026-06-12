@@ -160,6 +160,14 @@ pub struct PendingChange {
     pub change_type: String,
 }
 
+// ── GitConnectivity ──
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GitConnectivity {
+    pub status: String,   // "connected" | "disconnected"
+    pub message: Option<String>,
+}
+
 // ── WatcherEvent ──
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

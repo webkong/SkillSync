@@ -153,7 +153,7 @@ struct SettingsView: View {
 
 // MARK: - SettingsCard
 
-private struct SettingsCard<Content: View>: View {
+struct SettingsCard<Content: View>: View {
     let title: String
     @ViewBuilder let content: () -> Content
 

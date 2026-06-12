@@ -99,6 +99,13 @@ struct GitStatusInfo: Codable {
     let message: String?
 }
 
+// MARK: - GitConnectivity
+
+struct GitConnectivity: Codable {
+    let status: String       // "connected" | "disconnected"
+    let message: String?
+}
+
 // MARK: - PendingChange
 
 struct PendingChange: Codable, Identifiable {
