@@ -2,6 +2,11 @@
 
 macOS native application for unified management of AI Coding Agent skills/prompts. Centralizes skill files from `~/.agent/skills` and distributes them to multiple AI coding agents (Claude Code, Cursor, Windsurf, Copilot, Zed, etc.) via symlinks.
 
+## Agent Quick Start
+
+- Read `docs/agent-orientation.md` first for the current implementation map, ownership boundaries, and entry points.
+- Edit `CLAUDE.md`, not `AGENTS.md`. `AGENTS.md` must remain a symlink to this file.
+
 ## Tech Stack
 
 - **Frontend**: SwiftUI (macOS 14.0+, Swift 5.0)
