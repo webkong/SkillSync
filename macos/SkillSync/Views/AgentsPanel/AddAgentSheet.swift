@@ -24,7 +24,9 @@ struct AddAgentSheet: View {
                 Section("Skills Path") {
                     HStack {
                         TextField("~/path/to/agent/skills", text: $rawPath)
-                            .onChange(of: rawPath) { validatePath($0) }
+                            .onChange(of: rawPath) { _, newValue in
+                                validatePath(newValue)
+                            }
 
                         Button("Browse...") {
                             showFilePicker()

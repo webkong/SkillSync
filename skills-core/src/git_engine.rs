@@ -43,7 +43,7 @@ impl GitEngine {
         std::fs::create_dir_all(repo_path)
             .map_err(|e| format!("Failed to create directory {}: {}", repo_path.display(), e))?;
 
-        let mut repo = Repository::init(repo_path)
+        let repo = Repository::init(repo_path)
             .map_err(|e| format!("Failed to init git repo at {}: {}", repo_path.display(), e))?;
 
         // Configure local user for commits

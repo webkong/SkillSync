@@ -51,7 +51,6 @@ struct SettingsView: View {
                         .textFieldStyle(.roundedBorder)
                         .onAppear {
                             if sourceRoot.isEmpty {
-                                let home = FileManager.default.homeDirectoryForCurrentUser.path
                                 sourceRoot = "~/.agent/skills"
                             }
                         }

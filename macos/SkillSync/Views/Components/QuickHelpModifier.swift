@@ -19,18 +19,10 @@ struct QuickHelpModifier: ViewModifier {
     // MARK: - Tooltip Window Management
 
     private func showTooltip(_ text: String, near content: Content) {
-        guard let keyWindow = NSApp.keyWindow else { return }
+        guard let app = NSApp else { return }
+        guard let keyWindow = app.keyWindow else { return }
 
-        // Get the frame of the hovered view in screen coordinates
-        guard let contentView = keyWindow.contentView else { return }
-
-        // Find the NSView for this SwiftUI view by traversing
         let mouseLocation = NSEvent.mouseLocation
-        let windowOrigin = keyWindow.frame.origin
-        let localPoint = NSPoint(
-            x: mouseLocation.x - windowOrigin.x,
-            y: mouseLocation.y - windowOrigin.y
-        )
 
         // Remove existing tooltip
         hideTooltip()
@@ -67,7 +59,7 @@ struct QuickHelpModifier: ViewModifier {
 
         // Store reference
         objc_setAssociatedObject(
-            NSApp,
+            app,
             &QuickHelpModifier.tooltipKey,
             tooltipWindow,
             .OBJC_ASSOCIATION_RETAIN_NONATOMIC
@@ -75,9 +67,10 @@ struct QuickHelpModifier: ViewModifier {
     }
 
     private func hideTooltip() {
-        if let existing = objc_getAssociatedObject(NSApp, &QuickHelpModifier.tooltipKey) as? NSPanel {
+        guard let app = NSApp else { return }
+        if let existing = objc_getAssociatedObject(app, &QuickHelpModifier.tooltipKey) as? NSPanel {
             existing.close()
-            objc_setAssociatedObject(NSApp, &QuickHelpModifier.tooltipKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(app, &QuickHelpModifier.tooltipKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 

@@ -4,6 +4,8 @@ set -euo pipefail
 APP_DISPLAY_NAME="SkillSync"
 BUNDLE_ID="com.skillsync.app"
 SCHEME="SkillSync"
+GREEN='\033[0;32m'
+NC='\033[0m'
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MACOS_DIR="$ROOT_DIR/macos"
@@ -33,6 +35,7 @@ usage() {
 Usage: $0 <command>
 
 Commands:
+  sync-version    Sync scripts/version.env into Xcode project metadata
   build-rust      Build Rust core (aarch64-apple-darwin release)
   build-app       Build Xcode release .app
   build-zip       Build .app and create zip
@@ -66,23 +69,31 @@ require_release_notes() {
   fi
 }
 
+sync_version() {
+  "$ROOT_DIR/scripts/sync_version.sh"
+}
+
 # ─── Build Rust ───────────────────────────────────────────────────────────────
 
 build_rust() {
+  export PATH="$HOME/.cargo/bin:$PATH"
   require_command cargo
   echo "▶ Building Rust core (aarch64-apple-darwin)..."
-  export PATH="$HOME/.cargo/bin:$PATH"
   export OPENSSL_DIR=/opt/homebrew/opt/openssl
   export PKG_CONFIG_SYSROOT_DIR=/
   export PKG_CONFIG_PATH=/opt/homebrew/opt/openssl/lib/pkgconfig
-  cd "$RUST_DIR"
-  cargo build --release --target aarch64-apple-darwin
+  (
+    cd "$RUST_DIR"
+    cargo build --release --target aarch64-apple-darwin
+  )
   echo "✓ Rust core built"
 }
 
 # ─── Build Xcode App ──────────────────────────────────────────────────────────
 
 build_app() {
+  sync_version
+
   if [[ "${SKIP_RUST_BUILD:-0}" != "1" ]]; then
     build_rust
   fi
@@ -95,7 +106,7 @@ build_app() {
   local derived_data_path
   derived_data_path="$(mktemp -d "$DIST_DIR/xcode-build.XXXXXX")"
 
-  local xcode_sign_args=()
+  local -a xcode_sign_args=()
   if [[ -n "$CODE_SIGN_IDENTITY" && "$CODE_SIGN_IDENTITY" != "-" ]]; then
     xcode_sign_args+=("CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY")
     xcode_sign_args+=("CODE_SIGN_STYLE=Manual")
@@ -104,15 +115,21 @@ build_app() {
     xcode_sign_args+=("DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM")
   fi
 
-  xcodebuild \
-    -project SkillSync.xcodeproj \
-    -scheme "$SCHEME" \
-    -configuration Release \
-    -derivedDataPath "$derived_data_path" \
-    MARKETING_VERSION="$VERSION" \
-    CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
-    "${xcode_sign_args[@]}" \
-    build
+  local -a xcodebuild_cmd=(
+    xcodebuild
+    -project "$ROOT_DIR/SkillSync.xcodeproj"
+    -scheme "$SCHEME"
+    -configuration Release
+    -derivedDataPath "$derived_data_path"
+    MARKETING_VERSION="$VERSION"
+    CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+  )
+  if [[ "${#xcode_sign_args[@]}" -gt 0 ]]; then
+    xcodebuild_cmd+=("${xcode_sign_args[@]}")
+  fi
+  xcodebuild_cmd+=(build)
+
+  "${xcodebuild_cmd[@]}"
 
   local built_app
   built_app="$(find "$derived_data_path/Build/Products/Release" -name "*.app" -maxdepth 1 | head -1)"
@@ -210,8 +227,6 @@ POSTINSTALL
 # ─── Build All ────────────────────────────────────────────────────────────────
 
 build_all() {
-  build_rust
-  build_app
   build_zip
   echo -e "${GREEN}All builds complete!${NC}"
 }
@@ -219,10 +234,11 @@ build_all() {
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 case "${1:-}" in
+  sync-version)  sync_version ;;
   build-rust)    build_rust ;;
   build-app)     build_app ;;
   build-zip)     build_zip ;;
   build-pkg)     build_pkg ;;
-  build-all)     build_rust && build_app && build_zip ;;
+  build-all)     build_all ;;
   *)             usage; exit 1 ;;
 esac

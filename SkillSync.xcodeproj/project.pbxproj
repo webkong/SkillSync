@@ -23,8 +23,6 @@
 		3C5555ACE164B95F6B97DCEF /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60B9BFF74FB99CA1C726D68 /* SyncView.swift */; };
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
-		26870478A43345430FE7EE4C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E991F806D9CEFF3F7B30338C /* Info.plist */; };
-		B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */; };
 		AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* Assets.xcassets */; };
 
 		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
@@ -338,8 +336,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */,
-				26870478A43345430FE7EE4C /* Info.plist in Resources */,
-				B51029FD2E1B6727D8FEFE9B /* SkillSync.entitlements in Resources */,
 				LOGO0000BF /* antigravity.svg in Resources */,
 				LOGO0001BF /* claude-code.svg in Resources */,
 				LOGO0002BF /* codebuddy.svg in Resources */,
@@ -392,6 +388,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
 				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release/libskills_core.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,7 +469,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 0.1.0;
 				SDKROOT = macosx;
 				CURRENT_PROJECT_VERSION = 1;
@@ -537,7 +534,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 0.1.0;
 				SDKROOT = macosx;
 				CURRENT_PROJECT_VERSION = 1;
@@ -564,26 +561,26 @@
 				"$(inherited)",
 				"@executable_path/../Frameworks",
 				);
-			LIBRARY_SEARCH_PATHS = (
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release",
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug",
 				);
-			OTHER_LDFLAGS = (
-				"-force_load",
-				"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/release/libskills_core.a",
-				"-framework",
-				Security,
-				"-lz",
-				"-liconv",
-				"-L/opt/homebrew/opt/openssl/lib",
-				"-lssl",
-				"-lcrypto",
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(PROJECT_DIR)/skills-core/target/aarch64-apple-darwin/debug/libskills_core.a",
+					"-framework",
+					Security,
+					"-lz",
+					"-liconv",
+					"-L/opt/homebrew/opt/openssl/lib",
+					"-lssl",
+					"-lcrypto",
 				);
-			PRODUCT_BUNDLE_IDENTIFIER = com.skillsync.app;
-			SDKROOT = macosx;
-			SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillSync/Bridge/SkillSync-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = com.skillsync.app;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "macos/SkillSync/Bridge/SkillSync-Bridging-Header.h";
+			};
+			name = Debug;
 		};
-		name = Debug;
-	};
 	9A4DF478F372EEEC0888CC04 /* Release */ = {
 		isa = XCBuildConfiguration;
 		buildSettings = {
