@@ -276,6 +276,8 @@ pub extern "C" fn asm_delete_skill(handle: *mut CoreHandle, skill_id: *const c_c
         }
     }
 
+    h.db.delete_skill(&id).ok();
+
     // Update known skills
     h.known_skill_ids.remove(&id);
 

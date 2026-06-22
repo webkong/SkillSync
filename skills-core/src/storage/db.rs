@@ -223,6 +223,13 @@ impl Database {
         Ok(())
     }
 
+    pub fn delete_skill(&self, skill_id: &str) -> Result<(), String> {
+        self.conn
+            .execute("DELETE FROM skill_metadata WHERE id = ?1", params![skill_id])
+            .map_err(|e| format!("Failed to delete skill {}: {}", skill_id, e))?;
+        Ok(())
+    }
+
     /// Update source_dir, is_organized, and linked_agents for a skill (used after restore).
     pub fn update_skill_location(
         &self,

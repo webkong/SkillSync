@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct SkillsListView: View {
@@ -130,6 +131,10 @@ struct OrganizedSkillRowView: View {
 
     @ObservedObject private var appState = AppState.shared
     @AppStorage(AgentVisibilityStore.defaultsKey) private var visibleAgentsRaw = AgentVisibilityStore.defaultVisible.sorted().joined(separator: ",")
+    @State private var showDeleteConfirmation = false
+
+    private let actionColumnWidth: CGFloat = 120
+    private let agentsColumnWidth: CGFloat = 300
 
     private var visibleAgents: [AgentConfig] {
         let visibleIds = AgentVisibilityStore.visibleSet(from: visibleAgentsRaw)
@@ -143,10 +148,7 @@ struct OrganizedSkillRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                // Action buttons (organize / restore)
-                actionButton
-
+            HStack(alignment: .top, spacing: 12) {
                 Button {
                     appState.selectedSkill = skill
                 } label: {
@@ -163,15 +165,14 @@ struct OrganizedSkillRowView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
 
-                Spacer()
+                actionColumn
+                    .frame(width: actionColumnWidth, alignment: .leading)
 
-                // Agent toggle buttons
-                HStack(spacing: 4) {
-                    ForEach(visibleAgents) { agent in
-                        agentTag(for: agent)
-                    }
-                }
+                agentsColumn
+                    .frame(width: agentsColumnWidth, alignment: .leading)
             }
 
             // Tags row: manifest tags
@@ -189,9 +190,30 @@ struct OrganizedSkillRowView: View {
             }
         }
         .padding(.vertical, 4)
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .alignmentGuide(.listRowSeparatorTrailing) { dimensions in
+            dimensions[.trailing]
+        }
+        .alert("Delete Skill?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                appState.deleteSkill(skillId: skill.id)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will delete the skill files for \(skill.name) and remove all linked symlinks.")
+        }
     }
 
     // MARK: - Action Button
+
+    private var actionColumn: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if !skill.isOrganized || skill.isInSourceRoot {
+                actionButton
+            }
+            deleteButton
+        }
+    }
 
     @ViewBuilder
     private var actionButton: some View {
@@ -200,9 +222,17 @@ struct OrganizedSkillRowView: View {
             Button {
                 appState.organizeSkill(skillId: skill.id, agentId: skill.agentSource)
             } label: {
-                Image(systemName: "arrow.triangle.swap")
+                Label("Organize", systemImage: "arrow.triangle.swap")
                     .font(.caption)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
                     .foregroundStyle(.blue)
+                    .background(.blue.opacity(0.10), in: Capsule())
+                    .overlay(
+                        Capsule()
+                            .strokeBorder(.blue.opacity(0.18), lineWidth: 0.5)
+                    )
             }
             .buttonStyle(.plain)
             .quickHelp("Move to source directory")
@@ -211,12 +241,49 @@ struct OrganizedSkillRowView: View {
             Button {
                 appState.restoreSkill(skillId: skill.id)
             } label: {
-                Image(systemName: "arrow.uturn.backward")
+                Label("Restore", systemImage: "arrow.uturn.backward")
                     .font(.caption)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
                     .foregroundStyle(.orange)
+                    .background(.orange.opacity(0.10), in: Capsule())
+                    .overlay(
+                        Capsule()
+                            .strokeBorder(.orange.opacity(0.18), lineWidth: 0.5)
+                    )
             }
             .buttonStyle(.plain)
             .quickHelp("Restore back to original agent directory")
+        }
+    }
+
+    private var deleteButton: some View {
+        Button(role: .destructive) {
+            showDeleteConfirmation = true
+        } label: {
+            Label("Delete", systemImage: "trash")
+                .font(.caption)
+                .fontWeight(.medium)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .foregroundStyle(.red)
+                .background(.red.opacity(0.10), in: Capsule())
+                .overlay(
+                    Capsule()
+                        .strokeBorder(.red.opacity(0.18), lineWidth: 0.5)
+                )
+        }
+        .buttonStyle(.plain)
+        .quickHelp("Delete this skill and remove all linked symlinks")
+    }
+
+    private var agentsColumn: some View {
+        AgentTagClusterView(
+            agents: visibleAgents,
+            maxWidth: agentsColumnWidth
+        ) { agent in
+            agentTag(for: agent)
         }
     }
 
@@ -339,5 +406,99 @@ struct OrganizedSkillRowView: View {
         } else {
             return "Click to create symlink for \(agent.name)"
         }
+    }
+}
+
+private struct AgentTagClusterView<Content: View>: View {
+    let agents: [AgentConfig]
+    let maxWidth: CGFloat
+    let tagContent: (AgentConfig) -> Content
+
+    private let itemSpacing: CGFloat = 4
+    private let rowSpacing: CGFloat = 4
+
+    var body: some View {
+        let layout = AgentTagClusterLayout(
+            agents: agents,
+            maxWidth: maxWidth,
+            itemSpacing: itemSpacing
+        )
+
+        VStack(alignment: .leading, spacing: rowSpacing) {
+            ForEach(Array(layout.rows.enumerated()), id: \.offset) { index, rowAgents in
+                HStack(spacing: itemSpacing) {
+                    ForEach(rowAgents) { agent in
+                        tagContent(agent)
+                    }
+
+                    if index == layout.rows.count - 1, layout.hiddenCount > 0 {
+                        Text("+\(layout.hiddenCount)")
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(.gray.opacity(0.12), in: Capsule())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct AgentTagClusterLayout {
+    let rows: [[AgentConfig]]
+    let hiddenCount: Int
+
+    init(agents: [AgentConfig], maxWidth: CGFloat, itemSpacing: CGFloat) {
+        let badgeFont = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        let badgeWidths = agents.map { agent in
+            let textWidth = agent.name.size(withAttributes: [.font: badgeFont]).width
+            return ceil(textWidth + 37)
+        }
+
+        var firstRow: [AgentConfig] = []
+        var secondRow: [AgentConfig] = []
+        var firstWidth: CGFloat = 0
+        var secondWidth: CGFloat = 0
+        var hidden = 0
+
+        func rowWidth(_ current: CGFloat, adding itemWidth: CGFloat, isEmpty: Bool) -> CGFloat {
+            isEmpty ? itemWidth : current + itemSpacing + itemWidth
+        }
+
+        func overflowWidth(for hiddenCount: Int) -> CGFloat {
+            let text = "+\(hiddenCount)"
+            let width = text.size(withAttributes: [.font: badgeFont]).width
+            return ceil(width + 16)
+        }
+
+        for (index, agent) in agents.enumerated() {
+            let itemWidth = badgeWidths[index]
+            let remainingAfter = agents.count - index - 1
+
+            let firstCandidate = rowWidth(firstWidth, adding: itemWidth, isEmpty: firstRow.isEmpty)
+            let firstReserve = remainingAfter > 0 ? itemSpacing + overflowWidth(for: remainingAfter) : 0
+            if firstCandidate + firstReserve <= maxWidth {
+                firstRow.append(agent)
+                firstWidth = firstCandidate
+                continue
+            }
+
+            let secondCandidate = rowWidth(secondWidth, adding: itemWidth, isEmpty: secondRow.isEmpty)
+            let secondReserve = remainingAfter > 0 ? itemSpacing + overflowWidth(for: remainingAfter) : 0
+            if secondCandidate + secondReserve <= maxWidth {
+                secondRow.append(agent)
+                secondWidth = secondCandidate
+                continue
+            }
+
+            hidden = agents.count - index
+            break
+        }
+
+        let computedRows = [firstRow, secondRow].filter { !$0.isEmpty }
+        rows = computedRows.isEmpty ? [[]] : computedRows
+        hiddenCount = hidden
     }
 }

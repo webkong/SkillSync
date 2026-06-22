@@ -30,7 +30,7 @@ struct ContentView: View {
         .sheet(isPresented: $appState.showOrganizeConfirm) {
             OrganizeConfirmView()
         }
-        .onChange(of: appState.selectedSkill) { newValue in
+        .onChange(of: appState.selectedSkill) { _, newValue in
             if newValue != nil {
                 isDetailVisible = true
             }

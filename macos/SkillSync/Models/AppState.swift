@@ -83,8 +83,13 @@ final class AppState: ObservableObject {
 
     func deleteSkill(skillId: String) {
         if core.deleteSkill(skillId) {
+            _ = core.refreshSkillDb()
+            organizedSkills = core.getSkillList()
             skills = core.listSkills()
             agents = core.listAgents()
+            if selectedSkill?.id == skillId {
+                selectedSkill = nil
+            }
         }
     }
 
@@ -110,7 +115,7 @@ final class AppState: ObservableObject {
     func enableNewSkill(forAgentIds agentIds: [String]) {
         guard let skill = pendingNewSkill else { return }
         for agentId in agentIds {
-            core.createSymlink(agentId: agentId, skillId: skill.id)
+            _ = core.createSymlink(agentId: agentId, skillId: skill.id)
         }
         pendingNewSkill = nil
         agents = core.listAgents()

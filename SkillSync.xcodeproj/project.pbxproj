@@ -24,6 +24,7 @@
 		D61506DD53147A7D79FDE91C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644054408F44F0E400F2278C /* SettingsView.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OrganizePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1B3C4D5E6F7A8B9C0D1E2 /* OrganizePromptView.swift */; };
 		AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF67 /* Assets.xcassets */; };
+		AA11BB22CC33DD44EE55FF68 /* skillsync-logo-s.svg in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF69 /* skillsync-logo-s.svg */; };
 
 		LOGO0000BF /* antigravity.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0000FR /* antigravity.svg */; };
 		LOGO0001BF /* claude-code.svg in Resources */ = {isa = PBXBuildFile; fileRef = LOGO0001FR /* claude-code.svg */; };
@@ -79,6 +80,7 @@
 		E991F806D9CEFF3F7B30338C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4637E3EAAF19BEB63873D5A6 /* SkillSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SkillSync.entitlements; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF69 /* skillsync-logo-s.svg */ = {isa = PBXFileReference; lastKnownFileType = image.svg; path = skillsync-logo-s.svg; sourceTree = "<group>"; };
 		B9693C1AD3E74080D3204EE9 /* SkillSync-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkillSync-Bridging-Header.h; sourceTree = "<group>"; };
 		C2D27BB31EBC6B5686590172 /* SkillSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				AA11BB22CC33DD44EE55FF67 /* Resources/Assets.xcassets */,
+				AA11BB22CC33DD44EE55FF69 /* Resources/skillsync-logo-s.svg */,
 				E991F806D9CEFF3F7B30338C /* Resources/Info.plist */,
 				4637E3EAAF19BEB63873D5A6 /* Resources/SkillSync.entitlements */,
 				LOGOGRP /* brand-logos */,
@@ -336,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA11BB22CC33DD44EE55FF66 /* Assets.xcassets in Resources */,
+				AA11BB22CC33DD44EE55FF68 /* skillsync-logo-s.svg in Resources */,
 				LOGO0000BF /* antigravity.svg in Resources */,
 				LOGO0001BF /* claude-code.svg in Resources */,
 				LOGO0002BF /* codebuddy.svg in Resources */,
