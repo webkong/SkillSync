@@ -33,7 +33,7 @@ impl Database {
                 description TEXT NOT NULL DEFAULT '',
                 tags TEXT NOT NULL DEFAULT '[]',
                 compatible_agents TEXT NOT NULL DEFAULT '[\"*\"]',
-                version TEXT NOT NULL DEFAULT '0.1.0',
+                version TEXT NOT NULL DEFAULT 'unknown',
                 is_organized INTEGER NOT NULL DEFAULT 0,
                 linked_agents TEXT NOT NULL DEFAULT '[]',
                 updated_at TEXT NOT NULL DEFAULT ''

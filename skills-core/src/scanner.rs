@@ -206,7 +206,7 @@ impl Scanner {
                 description: format!("{} skill", id),
                 tags: Vec::new(),
                 compatible_agents: vec!["*".to_string()],
-                version: "0.1.0".to_string(),
+                version: "unknown".to_string(),
             }
         };
 

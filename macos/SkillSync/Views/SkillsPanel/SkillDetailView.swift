@@ -41,9 +41,11 @@ struct SkillDetailView: View {
 
                 // Version & Tags
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Version: \(skill.version)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if skill.version != "unknown" {
+                        Text("Version: \(skill.version)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
                     if !skill.tagsList.isEmpty {
                         HStack(spacing: 4) {

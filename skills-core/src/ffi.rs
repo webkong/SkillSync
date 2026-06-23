@@ -876,7 +876,7 @@ pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
                             description: format!("{} skill", skill_id),
                             tags: vec![],
                             compatible_agents: vec!["*".to_string()],
-                            version: "0.1.0".to_string(),
+                            version: "unknown".to_string(),
                         });
                     let desc = crate::scanner::extract_description(
                         &skill_path.join("SKILL.md")
@@ -894,7 +894,7 @@ pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
                     format!("{} skill", skill_id),
                     "[]".to_string(),
                     "[\"*\"]".to_string(),
-                    "0.1.0".to_string(),
+                    "unknown".to_string(),
                 ),
             }
         } else {
@@ -904,7 +904,7 @@ pub extern "C" fn asm_refresh_skill_db(handle: *mut CoreHandle) -> u8 {
                 if desc.is_empty() { format!("{} skill", skill_id) } else { desc },
                 "[]".to_string(),
                 "[\"*\"]".to_string(),
-                "0.1.0".to_string(),
+                "unknown".to_string(),
             )
         };
 

@@ -298,12 +298,14 @@ struct OrganizedSkillRowView: View {
     private var sourceIndicator: some View {
         if skill.isInSourceRoot {
             HStack(spacing: 4) {
-                Text("v\(skill.version)")
-                    .font(.caption2)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 1)
-                    .background(.gray.opacity(0.1), in: Capsule())
-                    .foregroundStyle(.secondary)
+                if skill.version != "unknown" {
+                    Text("v\(skill.version)")
+                        .font(.caption2)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(.gray.opacity(0.1), in: Capsule())
+                        .foregroundStyle(.secondary)
+                }
                 Text("Global")
                     .font(.caption2)
                     .padding(.horizontal, 6)
@@ -322,12 +324,14 @@ struct OrganizedSkillRowView: View {
             }
         } else {
             HStack(spacing: 4) {
-                Text("v\(skill.version)")
-                    .font(.caption2)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 1)
-                    .background(.gray.opacity(0.1), in: Capsule())
-                    .foregroundStyle(.secondary)
+                if skill.version != "unknown" {
+                    Text("v\(skill.version)")
+                        .font(.caption2)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(.gray.opacity(0.1), in: Capsule())
+                        .foregroundStyle(.secondary)
+                }
                 Text(agentName(for: skill.agentSource))
                     .font(.caption2)
                     .padding(.horizontal, 6)
