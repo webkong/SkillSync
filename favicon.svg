@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="SkillSync">
+  <defs>
+    <linearGradient id="bg" x1="36" y1="24" x2="220" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0891B2"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <circle cx="194" cy="54" r="5" fill="#FFFFFF" opacity="0.36"/>
+  <circle cx="54" cy="196" r="4" fill="#FFFFFF" opacity="0.28"/>
+  <text x="128" y="184" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="168" font-weight="800" fill="#FFFFFF">S</text>
+</svg>
